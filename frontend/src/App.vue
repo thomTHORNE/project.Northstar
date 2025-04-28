@@ -1,91 +1,59 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { doRx } from '@/common/composables/reactivity/doRx';
+import { LayoutName } from '@/features/layouts/layoutName';
+import Toast from 'primevue/toast';
+import { useRoute } from 'vue-router';
+import { ROUTE_META } from './common/constants/routeMeta';
+
+const route = useRoute();
+
+const layout = doRx(LayoutName.Blank)
+  .subscribe(() => route.meta, ({ incoming }, { ref }) => {
+    document.body.classList[route.path.includes(ROUTE_META.login.path) ? 'remove' : 'add']('panel-background')
+    ref.value = incoming.layout as LayoutName ?? LayoutName.Default
+  });
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <!-- <HelloWorld msg="You did it!" /> -->
-
-      <!-- <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav> -->
-    </div>
-  </header>
-
-  <RouterView />
+  <component :is="layout">
+    <!-- <routerView /> -->
+  </component>
+  <Toast />
+  <!--  <div id="app-dialog"></div>-->
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<style>
+html {
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-color);
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+body {
+  background-color: var(--p-content-background);
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.panel-background {
+  background-blend-mode: multiply;
+  background-image: url(/pattern.png);
+  background-position: 130px top;
+  background-repeat: no-repeat;
+  background-size: clamp(1000px, 100%, 2000px);
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+@media only screen and (min-width: 2000px) {
+  .panel-background {
+    background-repeat: repeat-x;
+    background-size: 2000px;
   }
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+h1,
+h2,
+h3,
+label {
+  color: var(--p-text-color)
 }
 </style>
+<style src="primeflex/primeflex.scss" />
+<style src="primeicons/primeicons.css" />
