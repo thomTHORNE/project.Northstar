@@ -6,11 +6,13 @@ import { type CmsApiResponse } from '@/common/contracts/cmsApi';
 import AppButton from '@/features/components/AppButton.vue';
 import FieldConstructor from '@/features/forms/FieldConstructor.vue';
 import { useFormSetup } from '@/features/forms/useFormSetup';
-import { useToast } from 'primevue';
-import { type SubmissionContext } from 'vee-validate';
-import { computed, ref } from 'vue';
+import { InputText, useToast } from 'primevue';
+import { type GenericObject, type SubmissionContext } from 'vee-validate';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { type FormElement } from '../forms/interfaces';
+import { doRx } from '@/common/composables/reactivity/doRx';
+import { credentialsProvider, init, initializeLogin } from '@tidal-music/auth';
 
 const router = useRouter()
 const toast = useToast();
@@ -19,49 +21,97 @@ const elements = ref<FormElement[]>([
   {
     componentType: 'textField',
     dataType: 'string',
-    propertyName: 'username',
-    labelText: 'Username',
-    validationConstraints: [
-      {
-        constraintType: 'notNull',
-        errorMessage: "Username is a required field."
-      },
-      { constraintType: 'email' }
-    ],
+    propertyName: 'clientId',
+    labelText: 'Client ID',
+    validationConstraints: [{constraintType: 'notNull'}],
     readonly: false,
     nullable: false
   },
   {
-    componentType: 'password',
+    componentType: 'textField',
     dataType: 'string',
-    propertyName: 'password',
-    labelText: 'Password',
-    validationConstraints: [{
-      constraintType: 'notNull'
-    }],
+    propertyName: 'redirectUrl',
+    labelText: 'Redirect url',
+    validationConstraints: [{constraintType: 'notNull'}],
     readonly: false,
     nullable: false
   }
 ]);
 
+
 const formSetup = useFormSetup(elements)
 const formSubmit = formSetup.form
-  .handleSubmit((values: Record<string, any>, ctx: SubmissionContext) => loginApi.execute())
-const loginApi = useHttpClient('auth/login', { immediate: false })
-  .post(formSetup.form.values)
-  .json<CmsApiResponse<any>>();
-loginApi.onFetchResponse(() => {
-  console.log('loginApi.data.value: ', loginApi.data.value);
+  .handleSubmit(async (values) => {
+    // store these values, since we need them after the redirect
+    localStorage.setItem('clientId', values.clientId);
+    localStorage.setItem('redirectUri', values.redirectUri);
 
-  if (!loginApi.data.value?.result) {
-    toast.add({
-      severity: "error",
-      summary: "Invalid data",
-      detail: loginApi.data.value?.message,
-      life: TOAST_LIFE
+    await init({
+      clientId: values.clientId,
+      credentialsStorageKey: 'authorizationCode',
     });
-  }
-  router.push({ name: ROUTE_META.home.name })
+
+    const loginUrl = await initializeLogin({
+      redirectUri: values.redirectUri,
+    });
+
+    window.open(loginUrl, '_self');
+  })
+// const loginApi = useHttpClient('auth/login', { immediate: false })
+//   .post(formSetup.form.values)
+//   .json<CmsApiResponse<any>>();
+// loginApi.onFetchResponse(() => {
+//   console.log('loginApi.data.value: ', loginApi.data.value);
+
+//   if (!loginApi.data.value?.result) {
+//     toast.add({
+//       severity: "error",
+//       summary: "Invalid data",
+//       detail: loginApi.data.value?.message,
+//       life: TOAST_LIFE
+//     });
+//   }
+//   router.push({ name: ROUTE_META.home.name })
+// })
+
+
+const artistsSearchInput = ref();
+
+const { ref: event_searchArtists, adapt: trigger_searchArtists } = doRx(undefined, {adapter: () => artistsSearchInput.value});
+
+const url = computed(() => {
+  let _ = 'https://openapi.tidal.com/search?';
+  const queryString = new URLSearchParams({
+    countryCode: 'NO',
+    limit: '10',
+    query: event_searchArtists.value,
+    type: 'ARTISTS',
+  }).toString()
+
+  return _+queryString
+});
+
+const artistsSearchAPI = useHttpClient(url, { 
+  refetch: true,
+  async beforeFetch({ url, options, cancel }) {
+    options.headers = {
+      ...options.headers,
+      Accept: 'application/vnd.tidal.v1+json',
+      Authorization: `Bearer ${credentials.token}`,
+      'Content-Type': 'application/vnd.tidal.v1+json',
+    }
+
+    return {
+      options,
+    }
+  }})
+  .json();
+// const getPageApi = useHttpClient(computed(() => routeTableName.value + '/getPageData'), { refetch: true })
+//   .post(computed(() => payload_getPage.value))
+//   .json<CmsApiResponse<CmsGetPageData>>();
+
+const artistsSearchResult = doRx([]).subscribe(event_searchArtists, ({incoming}, {ref}) => {
+  ref.value = incoming;
 })
 
 const logoUrl = computed(() => {
@@ -110,10 +160,10 @@ const logoUrl = computed(() => {
       <div id="login-form">
         <form @keyup.enter="formSubmit()">
           <FieldConstructor
-            :field="formSetup.fields.value.username"
+            :field="formSetup.fields.value.clientId"
           />
           <FieldConstructor
-            :field="formSetup.fields.value.password"
+            :field="formSetup.fields.value.redirectUrl"
           />
         </form>
 
@@ -123,6 +173,17 @@ const logoUrl = computed(() => {
             class="w-full mt-4 p-3 text-xl"
           />
       </div>
+        
+        <InputText v-model="artistsSearchInput"></InputText>
+        <AppButton
+          @click="trigger_searchArtists()"
+          label="Log In"
+          class="w-full mt-4 p-3 text-xl"
+        />
+
+        <ul>
+          <li v-for="artist of artistsSearchResult"><a :href="`https://listen.tidal.com/artist/${artist.resource?.id}`"><img :src="artist.resource?.picture.find(p => p.width === 160)" /> <span>{{ artist.resource?.name }}</span></a></li>
+        </ul>
     </div>
   </div>
 </template>
