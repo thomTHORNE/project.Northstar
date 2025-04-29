@@ -1,9 +1,9 @@
-import { CmsSchemaElement } from "@/common/contracts/cmsSchema";
-import { FieldConfig, FormElement } from "@/features/forms/interfaces";
-import { FormContext, useForm } from "vee-validate";
-import { computed, ComputedRef, Ref, watch } from "vue";
-import { object, ObjectShape } from "yup";
-import { COMPONENT_TYPE, CONSTRAINT_VALIDATOR, FieldComponentType, FieldConstraintType, getFieldDataTypeSchema } from "./config";
+import { type CmsSchemaElement } from "@/common/contracts/cmsSchema";
+import { type FieldConfig, type FormElement } from "@/features/forms/interfaces";
+import { type FormContext, useForm } from "vee-validate";
+import { computed, type ComputedRef, type Ref, watch } from "vue";
+import { object, type ObjectShape } from "yup";
+import { COMPONENT_TYPE, CONSTRAINT_VALIDATOR, type FieldComponentType, type FieldConstraintType, getFieldDataTypeSchema } from "./config";
 
 
 export interface UseFormSetup {

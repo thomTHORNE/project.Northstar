@@ -4,7 +4,7 @@ import { useHttpClient } from '@/common/composables/services/useHttpClient';
 import { ROUTE_META } from './common/constants/routeMeta';
 
 const router = createRouter({
-  history: createWebHistory('spa'),
+  history: createWebHistory(),
   routes: [
     {
       path: ROUTE_META.home.path,
@@ -16,9 +16,7 @@ const router = createRouter({
       name: ROUTE_META.notFound.name,
       component: () => import('@/features/404.vue'),
     },
-    ...routesAuth,
-    ...routesExtension ?? [],
-    ...routesEdit
+    ...routesAuth
   ]
 });
 

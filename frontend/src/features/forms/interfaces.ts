@@ -1,10 +1,12 @@
-import { CmsListItem } from "@/common/contracts/cmsList";
-import { CmsDataType, CmsSchemaElementConstraint } from "@/common/contracts/cmsSchema";
-import { CmsTreeView } from "@/common/contracts/cmsTree";
-import { FieldOptions } from "vee-validate";
-import { FieldComponentType, FieldConstraintType } from "./config";
+
 
 // export type PrimitiveType = "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
+
+import type { CmsListItem } from "@/common/contracts/cmsList";
+import type { CmsDataType, CmsSchemaElementConstraint } from "@/common/contracts/cmsSchema";
+import type { CmsTreeView } from "@/common/contracts/cmsTree";
+import type { FieldOptions } from "vee-validate";
+import type { FieldComponentType, FieldConstraintType } from "./config";
 
 export type FieldDataType = "number" | "string" | "string[]" | "boolean" | "date";
 export interface FormElement {

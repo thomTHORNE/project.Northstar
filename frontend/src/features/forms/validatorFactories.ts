@@ -1,5 +1,5 @@
-import { ValidatorFactoryInput } from "@/features/forms/interfaces";
-import { DateSchema, NumberSchema, StringSchema, TestContext } from "yup";
+import type { StringSchema, NumberSchema, DateSchema, TestContext } from "yup";
+import type { ValidatorFactoryInput } from "./interfaces";
 
 
 export function requiredFactory(schema, validationConstraint: ValidatorFactoryInput) {

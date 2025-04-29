@@ -1,6 +1,7 @@
-import { GenerateRandomId, VALIDATION_BEHAVIOUR } from "@/features/forms/config";
-import { ComponentConfigFactoryInput, FieldConfig } from "@/features/forms/interfaces";
+
 import Editor from "primevue/editor";
+import { VALIDATION_BEHAVIOUR, GenerateRandomId } from "../config";
+import type { ComponentConfigFactoryInput, FieldConfig } from "../interfaces";
 
 export function editorConfigFactory(element: ComponentConfigFactoryInput): FieldConfig {
     const importValue = ( value ) => value;

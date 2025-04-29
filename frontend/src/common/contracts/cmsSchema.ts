@@ -1,5 +1,5 @@
-import { CmsListItem } from "./cmsList";
-import { CmsTreeView } from "./cmsTree";
+import { type CmsListItem } from "./cmsList";
+import { type CmsTreeView } from "./cmsTree";
 
 
 enum CmsPageViewType {

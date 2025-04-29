@@ -1,10 +1,11 @@
-import { CmsListItem } from "@/common/contracts/cmsList";
-import { CmsDataType } from "@/common/contracts/cmsSchema";
-import { CmsTreeViewItem } from "@/common/contracts/cmsTree";
-import { GenerateRandomId, VALIDATION_BEHAVIOUR } from "@/features/forms/config";
-import { ComponentConfigFactoryInput, FieldConfig, FieldDataType } from "@/features/forms/interfaces";
-import { MultiSelect, Select, TreeSelect } from "primevue";
+
+import type { CmsListItem } from "@/common/contracts/cmsList";
+import type { CmsDataType } from "@/common/contracts/cmsSchema";
+import type { CmsTreeViewItem } from "@/common/contracts/cmsTree";
+import { MultiSelect } from "primevue";
 import type { TreeNode } from "primevue/treenode";
+import type { VALIDATION_BEHAVIOUR, GenerateRandomId } from "../config";
+import type { ComponentConfigFactoryInput, FieldConfig, FieldDataType } from "../interfaces";
 
 export function dropdownConfigFactory(element: ComponentConfigFactoryInput): FieldConfig | (() => void) {
     const switcher: Record<string, {

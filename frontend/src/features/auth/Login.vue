@@ -1,24 +1,57 @@
 <script setup lang="ts">
+import { doRx } from '@/common/composables/reactivity/doRx';
 import { useHttpClient } from '@/common/composables/services/useHttpClient';
-import { ROUTE_META } from '@/common/constants/routeMeta';
-import { TOAST_LIFE } from '@/common/constants/toastLife';
-import { type CmsApiResponse } from '@/common/contracts/cmsApi';
 import AppButton from '@/features/components/AppButton.vue';
 import FieldConstructor from '@/features/forms/FieldConstructor.vue';
 import { useFormSetup } from '@/features/forms/useFormSetup';
+import { credentialsProvider, finalizeLogin, init, initializeLogin } from '@tidal-music/auth';
 import { InputText, useToast } from 'primevue';
-import { type GenericObject, type SubmissionContext } from 'vee-validate';
-import { computed, ref, useTemplateRef } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { type FormElement } from '../forms/interfaces';
-import { doRx } from '@/common/composables/reactivity/doRx';
-import { credentialsProvider, init, initializeLogin } from '@tidal-music/auth';
 
 const router = useRouter()
+const route = useRoute()
 const toast = useToast();
+
+const storedClientId = ref();
+const storedRedirectUri = ref();
+
+// export const authErrorCodeMap = {
+//   authenticationError: 'A0000',
+//   illegalArgumentError: 'A0007',
+//   initError: 'A0001',
+//   networkError: 'A0002',
+//   retryableError: 'A0003',
+//   storageError: 'A0004',
+//   tokenResponseError: 'A0005',
+//   unexpectedError: 'A0006',
+// } as const;
+
+
+onMounted(async () => {
+  storedClientId.value = localStorage.getItem('clientId');
+  storedRedirectUri.value = localStorage.getItem('redirectUri');
+
+  if (storedClientId.value && storedRedirectUri.value) {
+      await init({
+        clientId: storedClientId.value,
+        credentialsStorageKey: 'authorizationCode',
+      });
+
+
+    if(route.query.code && route.query.code.length > 0) {
+      await finalizeLogin(window.location.search);
+      router.replace({path: route.path})
+    } else {
+      getUserInfo();
+    }
+  }
+})
 
 const elements = ref<FormElement[]>([
   {
+    value: '5rvQXOCb3zyGPfbw',
     componentType: 'textField',
     dataType: 'string',
     propertyName: 'clientId',
@@ -28,9 +61,10 @@ const elements = ref<FormElement[]>([
     nullable: false
   },
   {
+    value: 'http://localhost:5173/login',
     componentType: 'textField',
     dataType: 'string',
-    propertyName: 'redirectUrl',
+    propertyName: 'redirectUri',
     labelText: 'Redirect url',
     validationConstraints: [{constraintType: 'notNull'}],
     readonly: false,
@@ -56,7 +90,9 @@ const formSubmit = formSetup.form
     });
 
     window.open(loginUrl, '_self');
+    // https://localhost:5173/login?code=eyJraWQiOiJ2OU1GbFhqWSIsImFsZyI6IkVTMjU2In0.eyJ0eXBlIjoibzJfY29kZSIsInVpZCI6MTgxMjkxNTY0LCJzY29wZSI6IiIsImV4cCI6MTc0NTkyNjcxNiwiY2FsbGJhY2tVcmlJZCI6ImQ3NzBlZWQyLTRkZjYtNDc4Ni1iMTQzLWI5MDBlYjQ1MzExZCIsImNpZCI6MTQ0MTYsImNoYWxsZW5nZUlkIjoiMjJhNTMyYTEtYjRlNS00YzAxLWE0MTYtYWZlYzM4ZjA4YWE0IiwibG0iOiJnIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.W3LzKDXgRN2K7wPb7Nu3TznTDcwby2E6Wna9IUCWmCrZSn0_fAkum8ezCQEPLb4RBVY7TB62yZk7eFNGDzTqlA&state=na
   })
+  
 // const loginApi = useHttpClient('auth/login', { immediate: false })
 //   .post(formSetup.form.values)
 //   .json<CmsApiResponse<any>>();
@@ -75,25 +111,27 @@ const formSubmit = formSetup.form
 // })
 
 
-const artistsSearchInput = ref();
+const artistSearchInput = ref();
 
-const { ref: event_searchArtists, adapt: trigger_searchArtists } = doRx(undefined, {adapter: () => artistsSearchInput.value});
+const { ref: event_searchArtist, adapt: trigger_searchArtist } = doRx(undefined, {adapter: () => artistSearchInput.value});
 
 const url = computed(() => {
-  let _ = 'https://openapi.tidal.com/search?';
+  let _ = 'https://openapi.tidal.com/v2/artists?';
   const queryString = new URLSearchParams({
     countryCode: 'NO',
-    limit: '10',
-    query: event_searchArtists.value,
-    type: 'ARTISTS',
+    include: 'albums',
+    'filter[handle]': [event_searchArtist.value].toString()
   }).toString()
 
   return _+queryString
 });
 
-const artistsSearchAPI = useHttpClient(url, { 
+const artistSearchAPI = useHttpClient(url, { 
   refetch: true,
+  immediate: false,
   async beforeFetch({ url, options, cancel }) {
+    const credentials = await credentialsProvider.getCredentials();
+
     options.headers = {
       ...options.headers,
       Accept: 'application/vnd.tidal.v1+json',
@@ -110,9 +148,25 @@ const artistsSearchAPI = useHttpClient(url, {
 //   .post(computed(() => payload_getPage.value))
 //   .json<CmsApiResponse<CmsGetPageData>>();
 
-const artistsSearchResult = doRx([]).subscribe(event_searchArtists, ({incoming}, {ref}) => {
-  ref.value = incoming;
-})
+// const artistsSearchResult = doRx([]).subscribe(event_searchArtist, ({incoming}, {ref}) => {
+//   ref.value = incoming;
+// })
+
+async function getUserInfo(apiSubStatus?) {
+  const credentials = await credentialsProvider.getCredentials(apiSubStatus);
+
+  console.log('credentials', credentials)
+  console.log('token', base64UrlDecode(credentials.token))
+};
+
+ const base64UrlDecode = token => {
+  try {
+    const [, body] = token.split('.');
+    return JSON.parse(globalThis.atob(body));
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const logoUrl = computed(() => {
   // return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
@@ -127,33 +181,6 @@ const logoUrl = computed(() => {
       <div class="blur-element blur-dark"></div>
       <div class="blur-element blur-warm"></div>
       <div id="noise-overlay"></div>
-
-      <div id="brand">
-        <img
-          :src="logoUrl"
-          class="block"
-          style="width: 150%;"
-        >
-        <!-- <h1 class="flex flex-column mt-0">
-          <span class="block font-bold" style="letter-spacing: -0.25rem;font-size: 4rem;line-height: 1.9rem;">Element</span>
-          <span class="font-light">
-            <span style="margin-right: 4.2rem;font-size: 2.8rem;">C</span>
-            <span style="margin-right: 4.2rem;font-size: 2.8rem;">M</span>
-            <span style="font-size: 2.8rem;">S</span>
-          </span>
-        </h1> -->
-        <h1 class="flex flex-column mt-0">
-          <span
-            class="block font-bold"
-            style="letter-spacing: -0.25rem;font-size: 4rem;line-height: 1.9rem;"
-          >Element</span>
-          <span class="font-light">
-            <span style="margin-right: 1.2rem;font-size: 2.8rem;">C</span>
-            <span style="margin-right: 1.2rem;font-size: 2.8rem;">M</span>
-            <span style="font-size: 2.8rem;">S</span>
-          </span>
-        </h1>
-      </div>
     </div>
 
     <div id="login-section">
@@ -163,7 +190,7 @@ const logoUrl = computed(() => {
             :field="formSetup.fields.value.clientId"
           />
           <FieldConstructor
-            :field="formSetup.fields.value.redirectUrl"
+            :field="formSetup.fields.value.redirectUri"
           />
         </form>
 
@@ -173,17 +200,24 @@ const logoUrl = computed(() => {
             class="w-full mt-4 p-3 text-xl"
           />
       </div>
-        
-        <InputText v-model="artistsSearchInput"></InputText>
+
+      <div v-if="storedClientId && storedRedirectUri" class="block my-4">
+
+        <label class="block" for="artistSearchInput">Search artist</label>
+        <InputText id="artistSearchInput" v-model="artistSearchInput"></InputText>
+
         <AppButton
-          @click="trigger_searchArtists()"
-          label="Log In"
+          @click="trigger_searchArtist()"
+          label="Search"
           class="w-full mt-4 p-3 text-xl"
         />
 
         <ul>
-          <li v-for="artist of artistsSearchResult"><a :href="`https://listen.tidal.com/artist/${artist.resource?.id}`"><img :src="artist.resource?.picture.find(p => p.width === 160)" /> <span>{{ artist.resource?.name }}</span></a></li>
+          <li v-for="artist of artistSearchAPI.data"><a :href="`https://listen.tidal.com/artist/${artist?.resource?.id}`"><img :src="artist?.resource?.picture.find(p => p.width === 160)" /> <span>{{ artist?.resource?.name }}</span></a></li>
         </ul>
+        <p>{{ artistSearchAPI.data }}</p>
+      </div>
+
     </div>
   </div>
 </template>
@@ -227,23 +261,12 @@ const logoUrl = computed(() => {
   border-radius: 0 5px 5px 0;
   flex-grow: 1;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   padding-left: 50px;
   background-color: hwb(33deg 96% 0%);
   position: relative;
-
-  &:before {
-    content: '';
-    position: absolute;
-    transform: translateX(-51px);
-    width: 100%;
-    height: calc(100vh - 18px);
-    background-image: url("/pattern.png");
-    background-position: top;
-    background-repeat: no-repeat;
-    background-size: auto 21vw;
-  }
 
   #login-form {
     z-index: 2;

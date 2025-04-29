@@ -1,4 +1,4 @@
-import { AfterFetchContext, createFetch } from "@vueuse/core";
+import { type AfterFetchContext, createFetch } from "@vueuse/core";
 import { useAppUi } from "@/common/composables/services/useAppUi";
 
 const { setActiveRequest, removeRequest } = useAppUi();

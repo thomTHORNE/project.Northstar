@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { ROUTE_META } from "@/common/constants/routeMeta";
@@ -11,13 +11,11 @@ import Badge from 'primevue/badge';
 import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import Accordion from 'primevue/accordion';
-import { MenuItem } from 'primevue/menuitem';
+import { type MenuItem } from 'primevue/menuitem';
 import ButtonGroup from 'primevue/buttongroup';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
-import uiEditNavigationExtension from '#/features/edit/uiNavigation';
-import uiNavigationExtension from '#/features/uiNavigationExtension';
 import { ToggleSwitch } from 'primevue';
 
 const { toggleTheme, toggleWarmth, setAppFontSize, state } = useAppUi();
@@ -30,7 +28,6 @@ const items: Ref<MenuItem[]> = ref([
     {
         label: 'Edit',
         items: [
-            ...uiEditNavigationExtension,
             // {
             //     label: 'Category',
             //     icon: 'pi pi-plus',
@@ -46,7 +43,6 @@ const items: Ref<MenuItem[]> = ref([
             // }
         ],
     },
-    ...uiNavigationExtension,
     // {
     //     separator: true
     // }

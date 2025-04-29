@@ -1,4 +1,4 @@
-import { PrimeVueLocaleOptions } from "primevue/config";
+import type { PrimeVueLocaleOptions } from "primevue/config";
 
 /**
  * Localize what is needed from PrimeVueLocaleOptions interface.

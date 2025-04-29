@@ -1,6 +1,6 @@
-import { CmsListView } from "./cmsList";
-import { CmsFilterOption, CmsSchema } from "./cmsSchema";
-import { CmsTreeView } from "./cmsTree";
+import { type CmsListView } from "./cmsList";
+import { type CmsFilterOption, type CmsSchema } from "./cmsSchema";
+import { type CmsTreeView } from "./cmsTree";
 
 export interface CmsGetPageData {
     schema: CmsSchema,

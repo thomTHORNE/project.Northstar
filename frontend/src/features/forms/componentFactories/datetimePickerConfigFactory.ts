@@ -1,5 +1,5 @@
 import { GenerateRandomId, VALIDATION_BEHAVIOUR } from "@/features/forms/config";
-import { ComponentConfigFactoryInput, FieldConfig } from "@/features/forms/interfaces";
+import { type ComponentConfigFactoryInput, type FieldConfig } from "@/features/forms/interfaces";
 import { ApplicationLocaleOptions } from "@/features/i18n/localeOptions";
 import { DatePicker } from "primevue";
 

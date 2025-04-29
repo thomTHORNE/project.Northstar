@@ -1,5 +1,4 @@
-import { CONSTRAINT_VALIDATOR_EXTENSION } from "#/features/forms/configExtension";
-import { CmsDataType } from "@/common/contracts/cmsSchema";
+import { type CmsDataType } from "@/common/contracts/cmsSchema";
 import { checkboxConfigFactory } from "@/features/forms/componentFactories/checkboxConfigFactory";
 import { datetimePickerConfigFactory } from "@/features/forms/componentFactories/datetimePickerConfigFactory";
 import { dropdownConfigFactory } from "@/features/forms/componentFactories/dropdownConfigFactory";
@@ -14,9 +13,9 @@ import {
     notEqualToFactory, propertyReferenceFactory,
     requiredFactory
 } from "@/features/forms/validatorFactories";
-import { FieldOptions } from "vee-validate";
+import { type FieldOptions } from "vee-validate";
 import { array, boolean, date, number, Schema, string } from "yup";
-import { FieldDataType, ValidationConstraint } from "./interfaces";
+import { type FieldDataType, type ValidationConstraint } from "./interfaces";
 import { inputEmbedConfigFactory } from "./componentFactories/inputEmbedConfigFactory";
 
 
@@ -70,7 +69,6 @@ export const CONSTRAINT_VALIDATOR = {
     // GreaterThanOrEqualTo,
     // LessThan,
     // LessThanOrEqualTo,
-    ...CONSTRAINT_VALIDATOR_EXTENSION
 } as const;
 export function constraintValidatorTypeCheck<T extends Record<string, (schema: any, validationConstraint: ValidationConstraint) => Schema>>(constraintValidatorExtension: T): T { return constraintValidatorExtension }
 

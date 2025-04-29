@@ -1,5 +1,5 @@
 import { computedAsync, useDebounceFn, useStorage } from "@vueuse/core";
-import { Ref, ref, reactive, computed, readonly } from "vue";
+import { type Ref, ref, reactive, computed, readonly } from "vue";
 
 
 const activeRequests: Ref<string[]> = ref([]);

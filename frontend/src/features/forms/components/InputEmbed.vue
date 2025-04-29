@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onUnmounted, computed, watch, Ref, markRaw, useTemplateRef, ComputedRef } from 'vue';
-import AppButton from '@/features/components/AppButton.vue';
-import Quill, { Delta, QuillOptions } from 'quill';
+import type { MenuItem, MenuItemCommandEvent } from 'primevue/menuitem';
+import Quill, { type QuillOptions, Delta } from 'quill';
 import Embed from 'quill/blots/embed';
-import { InputText, Menu } from 'primevue';
-import { MenuItem, MenuItemCommandEvent } from 'primevue/menuitem';
+import { ref, useTemplateRef, type Ref, type ComputedRef, computed, watch, markRaw, onUnmounted } from 'vue';
+
+
 
 /**
  * Refer to [ASCII Table](https://www.ascii-code.com/) for character codes.

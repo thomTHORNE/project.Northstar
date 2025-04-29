@@ -1,5 +1,5 @@
 import { extendRef } from "./extendRef";
-import { customRef, reactive, Ref, watch, WatchOptions, WatchSource } from "vue";
+import { customRef, reactive, type Ref, watch, type WatchOptions, type WatchSource } from "vue";
 
 export interface DoRx<T, TControls = T> extends Ref<T> {
     subscribe<U>(
