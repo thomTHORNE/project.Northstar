@@ -169,91 +169,177 @@ For each data type, use the same template below.
 
 ### 3.1.1 Definition
 
-What the object represents at a conceptual level.
+A track is the most granular unit of data in Northstar, representing a single audio file or stream. It contains only the metadata that identifies what the song is, not the actual digital audio data itself. The track serves as the fundamental building block of the library, linking user-curated metadata to external audio sources.
 
 ### 3.1.2 Attributes
 
-Field list with descriptions (simple text, not DB schema).
+- **Title**: The name of the track
+- **Duration**: Length of the track in seconds or milliseconds
+- **File Path or URL**: Reference to the external audio source location
+- **Artist ID**: Unique identifier linking the track to its artist
+- **Album ID**: Unique identifier linking the track to its album
+- **External Source Links**: One or more URLs to external streaming services or audio sources associated with the user's account
+- **Tags**: Optional descriptive metadata for categorization (moods, activities, sub-genres)
 
 ### 3.1.3 Relationships
 
-How this type interacts with others.
-(e.g., Track → Artist, Track → Album, Playlist → Track[])
+- **Track → Artist**: Each track must be linked to one artist (or marked as "Unrelated" if no artist is assigned)
+- **Track → Album**: Each track may be linked to one album
+- **Playlist → Track[]**: Tracks can be referenced by multiple playlists
+- **Track → External Sources**: A single track can be linked to multiple external sources (streaming services, URLs)
+- **Track → Tags**: A track can have multiple tags applied to it
 
 ### 3.1.4 Lifecycle
 
-Creation, editing, committing, staging, deletion, merging.
+**Creation:**
+- **Manual Addition**: User provides a link to an external source. Northstar attempts to extract metadata automatically. If extraction fails but linking succeeds, user may enter track information manually.
+- **Automatic Import**: Tracks are added through the import process from streaming services (manual or automatic import workflows).
+
+**Initial State:**
+- All newly created or imported tracks are placed in **Staging** for user evaluation.
+
+**Commitment:**
+- User reviews track in Staging and commits it to the **Repository**.
+- Upon commitment, Northstar automatically creates and sets up relations between Track, Artist, and Album.
+
+**Editing:**
+- Track metadata can be modified while in Staging.
+- `OPEN QUESTION`: Can tracks in Repository be edited? Is Repository read-only or read/write?
+
+**Deletion:**
+- Tracks can be discarded from Staging before commitment.
+- `OPEN QUESTION`: What happens when a committed track in Repository is deleted? How does this affect related Artists, Albums, and Playlists?
 
 ### 3.1.5 Constraints
 
-Rules the system must enforce.
+- **External Source Requirement**: A track must have at least one external source link to be valid.
+- **Artist Assignment**: Tracks in the Repository are categorized as either "Related" (has assigned artist) or "Unrelated" (missing artist assignment).
+- **Unique Identification**: Each track must have a unique identifier within the system.
+- **Multiple External Links**: Users may link a single track to multiple external sources and may remove these links at any time.
 (e.g., “Track must have ≥ 1 external source link”)
 
 ### 3.1.6 Edge Cases
 
-(e.g., orphan tracks, duplicate artists)
+- **Orphan Tracks**: Tracks that lose their artist or album association due to deletion or modification of related entities.
+- **Failed Metadata Extraction**: When Northstar cannot extract metadata from an external source, the user must manually enter track information.
+- **Duplicate Tracks**: Multiple tracks pointing to the same external source but with different metadata.
+- **Unrelated Tracks**: Tracks committed to Repository without an assigned artist remain in the "Unrelated" category until an artist is assigned.
 
 ## 3.2 Playlist
 
 ### 3.2.1 Definition
 
-What the object represents at a conceptual level.
+A playlist is a user-defined or system-generated collection of tracks. Unlike an album, which is a static professional release, a playlist is dynamic and can contain tracks from many different artists and albums. Playlists serve as flexible organizational tools for curating music based on mood, activity, or personal preference.
 
 ### 3.2.2 Attributes
 
-Field list with descriptions (simple text, not DB schema).
+- **Name**: The title of the playlist
+- **Description**: Optional text describing the playlist's purpose or theme
+- **Created By**: User ID of the creator (used for social sharing features)
+- **Track List**: Ordered list of track references
+- **Creation Date**: Timestamp of when the playlist was created
+- **Last Modified**: Timestamp of the most recent modification
+- **Capture Mode Status**: Boolean indicating whether this playlist is actively capturing tracks
 
 ### 3.2.3 Relationships
 
-How this type interacts with others.
-(e.g., Track → Artist, Track → Album, Playlist → Track[])
+- **Playlist → Track[]**: Contains an ordered list of track references
+- **Playlist → User**: Belongs to a specific user (creator)
+- **Playlist → Capture Mode**: May have Capture Mode enabled (exclusive - only one playlist per user can have this active)
 
 ### 3.2.4 Lifecycle
 
-Creation, editing, committing, staging, deletion, merging.
+**Creation:**
+Playlists can be created through multiple initiation points:
+- **Global "New Playlist" Action**: Dedicated button in navigation sidebar or library header
+- **Contextual "Add to New Playlist" Action**: Via "More Options" (ellipsis) menu on any track, album, or artist page
+- **Composable "Add to New Playlist" Action**: Via filter bar within album or artist pages
+- **Selection-Based Action**: When user selects multiple tracks and chooses "Create Playlist from Selection"
+
+**Editing:**
+- Users can add or remove tracks from playlists
+- Playlist metadata (name, description) can be modified
+- Track order can be rearranged
+- `OPEN QUESTION`: What happens when a playlist is changed while in Staging vs Repository?
+
+**Deletion:**
+- Playlists can be deleted by the user
+- `OPEN QUESTION`: What happens when a playlist is deleted? Are the tracks affected, or only the playlist container?
 
 ### 3.2.5 Constraints
 
-Rules the system must enforce.
+- **Unique Name**: Playlist names should be unique within a user's library (or allow duplicates with warning)
+- **Track References**: Playlists contain references to tracks, not copies of track data
+- **Capture Mode Exclusivity**: Only one playlist per user account may have Capture Mode enabled at any given time
+- **Ordered Collection**: The sequence of tracks in a playlist must be preserved
 (e.g., “Track must have ≥ 1 external source link”)
 
 ### 3.2.6 Edge Cases
 
-(e.g., orphan tracks, duplicate artists)
+- **Empty Playlists**: Playlists with no tracks are valid
+- **Deleted Track References**: When a track is deleted, playlist references to that track must be handled (remove reference or mark as unavailable)
+- **Duplicate Tracks**: A playlist may contain the same track multiple times if desired by the user
+- **Capture Mode Conflicts**: Enabling Capture Mode on "Playlist B" automatically disables it on "Playlist A"
 
 ## 3.3 Artist
 
 ### 3.3.1 Definition
 
-What the object represents at a conceptual level.
+The artist data type represents the creator or performer of the music. This can be an individual person, a band, or a composer. It serves as a top-level organizational entity in the library hierarchy, providing a way to group and discover music by its creator.
 
 ### 3.3.2 Attributes
 
-Field list with descriptions (simple text, not DB schema).
+- **Name**: The artist's name or band name
+- **Biography**: Optional descriptive text about the artist
+- **External Links**: URLs to artist profiles on streaming services or official websites
+- **Image/Photo**: Optional artist photo or logo
+- **Genre**: Primary genre(s) associated with the artist
+- **Album IDs**: List of albums associated with this artist
+- **Track IDs**: List of tracks associated with this artist
 
 ### 3.3.3 Relationships
 
-How this type interacts with others.
-(e.g., Track → Artist, Track → Album, Playlist → Track[])
+- **Artist → Album[]**: An artist can have multiple albums
+- **Artist → Track[]**: An artist can have multiple tracks
+- **Track → Artist**: Each track (in "Related" category) must link to one artist
+- **Album → Artist**: Each album must link to one artist
 
 ### 3.3.4 Lifecycle
 
-Creation, editing, committing, staging, deletion, merging.
+**Creation:**
+- Artists are automatically created when a track is committed to the Repository with artist metadata
+- Artists can also be manually created by users
+
+**Auto-Setup:**
+- When a track is committed to Repository, Northstar automatically creates artist entities based on track metadata
+- The system establishes relationships between Artist, Album, and Track
+
+**Editing:**
+- Artist metadata can be modified
+- `OPEN QUESTION`: What happens when an artist is changed? How does this affect related tracks and albums?
+
+**Deletion:**
+- `OPEN QUESTION`: What happens when an artist is deleted? Do related tracks become "Unrelated"? Are albums affected?
 
 ### 3.3.5 Constraints
 
-Rules the system must enforce.
+- **Unique Identification**: Each artist must have a unique identifier
+- **Name Requirement**: Artist must have a name
+- **Track Association**: Artists in the Repository must have at least one associated track (or be manually created in anticipation of tracks)
 (e.g., “Track must have ≥ 1 external source link”)
 
 ### 3.3.6 Edge Cases
 
-(e.g., orphan tracks, duplicate artists)
+- **Duplicate Artists**: Multiple artist entries with similar names (e.g., "The Beatles" vs "Beatles")
+- **Orphaned Artists**: Artists with no associated tracks after track deletions
+- **Collaborations**: Tracks featuring multiple artists (how to handle primary vs. featured artists)
+- **Name Changes**: Artists who change their name over time
 
 ## 3.4 Album
 
 ### 3.4.1 Definition
 
-What the object represents at a conceptual level.
+An album is a collection of tracks released together by an artist. It acts as a container that groups tracks based on their original publication. Unlike playlists, albums are static professional releases that maintain the original tracklist sequence and represent a cohesive artistic work.
 
 ### 3.4.2 Attributes
 

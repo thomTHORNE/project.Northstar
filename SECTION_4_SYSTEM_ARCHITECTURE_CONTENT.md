@@ -1,0 +1,212 @@
+# Section 4 - System Architecture Content
+
+This document contains the content to be added to Section 4 of FunctionalSpecification.md, extracted from `Features\The Library.md`.
+
+---
+
+## 4.1 Library Spaces
+
+The Northstar library is divided into two primary spaces: **Staging** and **Repository**. This separation provides a clear workflow for library management and prevents the Repository from being polluted by unvetted data.
+
+### 4.1.1 Staging
+
+**Purpose:**
+Staging is a temporary workspace for all data types that a user has made changes to and is evaluating before deciding whether to commit them to the library or discard them.
+
+**Key Characteristics:**
+- Provides a clear visual distinction of intent for library management
+- Acts as a buffer zone between external data sources and the permanent library
+- All imported data from service integrations is initially placed here
+- Prevents the Repository from being polluted by large amounts of unvetted data
+
+**Rules:**
+- Any data imported through a service integration will be placed in Staging
+- Users can review, edit, and modify data while it remains in Staging
+- Data can be committed to the Repository or discarded from Staging
+
+**Open Questions:**
+- What happens when a playlist is changed/deleted in Staging?
+- What happens when a track is changed/deleted in Staging?
+- What happens when an artist is changed/deleted in Staging?
+- What happens when an album is changed/deleted in Staging?
+- How are changes bulk managed in Staging?
+- Are tracks in Staging playable? (Perhaps only playlists created in Staging, not tracks that are part of pending changes?)
+
+### 4.1.2 Repository
+
+**Purpose:**
+The Repository is the single source of truth for the user's committed music library. It contains only tracks that have been officially committed by the user.
+
+**Key Characteristics:**
+- Tracks are the fundamental unit; they are the "single source of truth"
+- Upon track commitment, Northstar automatically creates and sets up relations between Track, Artist, and Album
+- Tracks are organized into two categories: Related and Unrelated
+
+**Track Organization:**
+The Repository categorizes all tracks based on artist assignment:
+
+1. **Related**: Tracks with an assigned artist
+   - These tracks have complete metadata including artist information
+   - They participate in the Artist → Album → Track hierarchy
+   
+2. **Unrelated**: Tracks that are missing an artist assignment
+   - These tracks exist in the library but lack artist metadata
+   - They remain in this category until an artist is assigned
+   - Purpose: Track identification by artist
+
+**Rules:**
+- Only committed tracks exist in the Repository
+- Northstar automatically creates Artist and Album entities when tracks are committed
+- The system establishes relationships between Track, Artist, and Album upon commitment
+- Tracks must be categorized as either Related or Unrelated
+
+**Open Questions:**
+- What happens when a playlist is changed/deleted in the Repository?
+- What happens when a track is changed/deleted in the Repository?
+- Is the Repository read-only or read/write?
+
+---
+
+## 4.2 Movement & Commit Logic
+
+**From External Source to Staging:**
+- Manual track addition: User provides external link → Metadata extraction → Placed in Staging
+- Automatic import: Service integration imports data → All imported items placed in Staging
+
+**From Staging to Repository:**
+- User reviews data in Staging
+- User commits selected items to Repository
+- Upon commitment of a track:
+  1. Track is moved to Repository
+  2. System analyzes track metadata
+  3. System automatically creates Artist entity (if it doesn't exist)
+  4. System automatically creates Album entity (if it doesn't exist)
+  5. System establishes relationships: Track → Artist, Track → Album, Album → Artist
+  6. Track is categorized as "Related" (if artist assigned) or "Unrelated" (if no artist)
+
+**Discard from Staging:**
+- User can discard items from Staging without committing them
+- Discarded items are permanently removed (or moved to trash/archive)
+
+---
+
+## 4.3 Import Sources
+
+### 4.3.1 Manual Track Addition
+
+**Process:**
+1. User provides a link to an external source (streaming service, URL, etc.)
+2. Northstar attempts to extract metadata from the source
+3. **If extraction succeeds:**
+   - Track is created with extracted metadata
+   - Track is placed in Staging for user review
+4. **If extraction fails but linking succeeds:**
+   - User is permitted to enter track information manually
+   - Track is created with manual metadata
+   - Track is placed in Staging
+
+**Metadata Extraction:**
+- Northstar attempts to automatically extract: Title, Artist, Album, Duration, Cover Art, etc.
+- External source link is stored with the track
+- Multiple external sources can be linked to a single track
+
+### 4.3.2 Automatic Import
+
+**Process:**
+- User sets up automatic import from a streaming service
+- Import triggers at a set time interval
+- All imported data is placed in Staging for user review
+
+**Configuration Options:**
+- Automation title
+- Opt certain data source subtrees out of import
+- Relational starting point preference
+
+**References:**
+- See: `Features\Automatic import to library from a streaming service.md`
+- See: `Features\Manual import to library from a streaming service.md` (referenced in The Library.md)
+
+---
+
+## 4.4 Permissions / Data Access Characteristics
+
+**Staging:**
+- Read/Write access
+- Users can freely modify, add, remove data
+- Temporary workspace with no permanent consequences
+
+**Repository:**
+- `OPEN QUESTION`: Is Repository read-only or read/write?
+- If read-only: Users must move items back to Staging to edit them
+- If read/write: Users can edit committed items directly, but what are the implications for relationships?
+
+**Recommendation for Specification:**
+This needs to be decided and clearly documented. Consider:
+- **Read-Only Repository**: Cleaner separation, prevents accidental changes, but less flexible
+- **Read/Write Repository**: More flexible, but requires careful handling of relationship updates
+
+---
+
+## 4.5 Bulk Operations
+
+**Bulk Commit:**
+- Users can select multiple items in Staging and commit them all at once
+- System processes each item and creates necessary relationships
+
+**Bulk Discard:**
+- Users can select multiple items in Staging and discard them all at once
+
+**Bulk Edit:**
+- `OPEN QUESTION`: How are changes bulk managed?
+- Can users apply metadata changes to multiple tracks at once?
+- Can users bulk-assign artists or albums?
+
+---
+
+## 4.6 Error Handling & Recovery
+
+### 4.6.1 Metadata Extraction Failures
+
+**Scenario:** Northstar cannot extract metadata from an external source
+
+**Handling:**
+- If linking succeeds: User is prompted to enter metadata manually
+- If linking fails: User is notified, and track creation is aborted
+
+**User Experience:**
+- Clear error messages explaining what failed
+- Guidance on how to proceed (manual entry, try different source, etc.)
+
+### 4.6.2 Relationship Conflicts
+
+**Scenario:** Track metadata conflicts with existing Artist/Album entities
+
+**Handling:**
+- System should detect potential duplicates (e.g., "The Beatles" vs "Beatles")
+- Prompt user to merge or create new entity
+- Preserve data integrity
+
+### 4.6.3 External Source Link Failures
+
+**Scenario:** An external source link becomes invalid (service removed track, URL changed, etc.)
+
+**Handling:**
+- Track remains in library with metadata intact
+- User is notified of broken link
+- User can add new external source link or remove broken one
+- Track playback may fail, but library data is preserved
+
+---
+
+## Notes for Implementation
+
+1. **Staging as a Safety Net**: The Staging/Repository separation is a core architectural decision that protects the user's curated library from accidental pollution.
+
+2. **Automatic Relationship Management**: The system's ability to automatically create and manage Artist/Album relationships upon track commitment is a key value proposition.
+
+3. **Related vs. Unrelated**: This categorization helps users identify incomplete metadata and maintain library quality.
+
+4. **Multiple External Sources**: The ability to link a single track to multiple streaming services is important for flexibility and resilience.
+
+5. **Open Questions Must Be Resolved**: Many of the open questions about editing and deletion behavior need to be answered before implementation can proceed.
+
