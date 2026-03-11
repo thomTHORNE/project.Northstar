@@ -1,53 +1,6 @@
 # Content for Album (3.4) and Tag (3.5) sections
 
-## 3.4.2 Attributes
 
-- **Title**: The name of the album
-- **Release Date**: When the album was officially released
-- **Cover Art**: URL to the album cover image
-- **Genre**: Primary genre(s) of the album
-- **Artist ID**: Reference to the artist who created the album
-- **Track List**: Ordered list of track IDs preserving the original tracklist sequence
-- **Label**: Optional record label information
-- **Total Duration**: Combined length of all tracks
-
-## 3.4.3 Relationships
-
-- **Album → Artist**: Each album must be linked to one artist
-- **Album → Track[]**: Contains an ordered list of tracks
-- **Track → Album**: Each track may belong to one album
-
-## 3.4.4 Lifecycle
-
-**Creation:**
-- Albums are automatically created when tracks are committed to the Repository with album metadata
-- Albums can also be manually created by users
-
-**Auto-Setup:**
-- When a track with album information is committed to Repository, Northstar automatically creates album entities
-- The system establishes relationships between Album, Artist, and Tracks
-
-**Editing:**
-- Album metadata can be modified
-- Track order within the album can be adjusted
-- OPEN QUESTION: What happens when an album is changed? How does this affect related tracks?
-
-**Deletion:**
-- OPEN QUESTION: What happens when an album is deleted? Do tracks lose their album association?
-
-## 3.4.5 Constraints
-
-- **Unique Identification**: Each album must have a unique identifier
-- **Title Requirement**: Album must have a title
-- **Artist Association**: Each album must be associated with one artist
-- **Track Order Preservation**: The original tracklist sequence must be maintained
-
-## 3.4.6 Edge Cases
-
-- **Duplicate Albums**: Multiple album entries with the same name from the same artist (e.g., remastered versions, deluxe editions)
-- **Orphaned Albums**: Albums with no associated tracks after track deletions
-- **Compilation Albums**: Albums featuring tracks from multiple artists
-- **Singles vs. Albums**: Tracks that exist both as singles and as part of an album
 
 ## 3.5.1 Definition
 
