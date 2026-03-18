@@ -1,3 +1,11 @@
+# Template
+
+---
+
+- TOC
+
+---
+
 # 1. Overview & Purpose
 
 ---
@@ -25,8 +33,6 @@ Example:
 
 # 2. Core Concepts
 
-`HORIZONTAL`
-
 High‑level conceptual pillars of the system. These are not tied to UI or features.
 
 Examples might include:
@@ -42,8 +48,6 @@ Include concise conceptual descriptions here. Longer operational details go late
 ---
 
 # 3. Data Model
-
-`HORIZONTAL`
 
 This section establishes the laws of the system. Every feature must obey these rules.
 
@@ -85,8 +89,6 @@ This is where your “>” thoughts go.
 
 # 4. System Architecture
 
-`HORIZONTAL`
-
 Not code architecture—functional architecture.
 
 ---
@@ -118,8 +120,6 @@ Manual, automatic, streaming service integrations.
 
 # 5. Global Functional Requirements
 
-`HORIZONTAL`
-
 Requirements that apply across many features.
 
 Examples:
@@ -142,8 +142,6 @@ Each feature gets its own vertical section.
 Use the template below for every feature (Capture Mode, Playlist Creation, Imports, Tagging, etc.)
 
 # 6.X Feature Name
-
-`VERTICAL`
 
 ---
 
@@ -219,23 +217,17 @@ Narrative examples (you already wrote these for Capture Mode).
 
 # 7. Interactions Between Features
 
-`HORIZONTAL`
-
 If two features interact frequently (e.g., Capture Mode + Playlist Management), document those interactions here.
 
 ---
 
 # 8. Edge Cases & Global Constraints
 
-`HORIZONTAL`
-
 System-wide exceptions that don’t belong to one specific feature.
 
 ---
 
 # 9. Glossary
-
-`HORIZONTAL`
 
 Define any domain-specific terms.
 

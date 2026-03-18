@@ -1,4 +1,4 @@
-# Section 6.2 - Playlist Capture Mode Feature
+#6.1 Playlist Capture Mode Feature
 
 This document contains the content for a new VERTICAL feature section (6.2) to be added to FunctionalSpecification.md, extracted from `Features\The Library.md`.
 
