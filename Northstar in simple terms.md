@@ -1,11 +1,12 @@
 Northstar is your personal music library. It doesn't store audio files — it stores your relationship with music: the artists you love, the albums that matter, the playlists you've built, the moments you want to remember.
 
-You bring your own streaming service. Northstar links to it and plays through it. What Northstar owns is everything else — your library, your structure, your context. If you switch services tomorrow, your library stays intact.
+You bring your own audio sources — a streaming service, YouTube, cloud storage, or any combination. Northstar links to them and plays through them. What Northstar owns is everything else — your library, your structure, your context. If you switch services tomorrow, your library stays intact.
 
 ## What you can do with it
 
 At its core, Northstar lets you build and manage a music library that is truly yours:
 
+- **Import** your existing music from a streaming service, YouTube, or cloud storage — so you don't start from scratch
 - **Organize** artists, albums, tracks, and playlists your way, independent of any streaming service's interface or algorithm
 - **Tag** anything with your own labels — a mood, a memory, a context, whatever gives the music meaning to you
 - **Write notes** on any artist, album, track, or playlist — why you love it, where you were when you found it, what it reminds you of
@@ -13,6 +14,16 @@ At its core, Northstar lets you build and manage a music library that is truly y
 - **Track your habits** — over time, Northstar learns your listening patterns and can surface connections you haven't noticed yourself
 
 The idea is simple: music means something. Northstar gives you the space to capture that meaning, not just stream past it.
+
+## Import
+
+Most people already have music somewhere — years of saved albums on Spotify, liked songs on Apple Music, a YouTube playlist, audio files sitting in Google Drive. Import is how you bring all of that into Northstar without starting from scratch.
+
+**From a streaming service** — connect your account and Northstar pulls in your existing library: artists, albums, tracks, and playlists, with all the relationships between them intact. It replicates the structure as a starting point. From there, it's yours to build on.
+
+**From a link** — paste a URL to any track, album, or artist on a supported service, a YouTube video, or a file in your cloud storage. Northstar extracts what metadata it can and adds the entry to your library. This is the lightweight path — no full account connection needed, just a link to something you want in your collection.
+
+Either way, once something is in Northstar, it belongs to your library. The source is just a reference — where Northstar goes to play the audio. The rest of the data is yours.
 
 ## Organize
 
