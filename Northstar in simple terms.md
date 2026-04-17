@@ -81,13 +81,11 @@ This is also what separates Northstar from a music app that's purely about playb
 
 ## Track your habits
 
-As you use Northstar, it quietly builds a picture of how you listen. What you play, when, how often, in what order. Not to sell you something — to give that data back to you.
+Northstar can keep a record of how you listen — what you play, when, how often, where. This is opt-in and the data stays yours, never used to target you with anything.
 
-Over time this becomes useful in ways that are hard to anticipate upfront. You might notice you gravitate toward certain artists on certain days. That a tag you created a year ago still dominates your most-played tracks. That there's a cluster of albums you return to every winter. Northstar surfaces these patterns without imposing conclusions — you decide what they mean.
+Over time this record becomes the foundation for something more interesting: understanding your own relationship with music. You might notice you return to certain artists every winter. That a tag you made a year ago still dominates your most-played tracks. That your listening shifts completely when you travel. Northstar surfaces these patterns without drawing conclusions — you decide what they mean.
 
-It can also help with discovery. Because your library is yours — structured by you, tagged by you — recommendations drawn from it reflect your taste, not a generalized model of what people like you tend to enjoy. The input is specific, so the output is too.
-
-This is the feature that grows with you. The longer you use Northstar, the more it knows about your relationship with music, and the more useful it becomes — not by replacing your judgment, but by informing it.
+This is a feature that grows with you. The longer you use Northstar, the richer the picture becomes.
 
 ## Who it's for
 
