@@ -1,5 +1,9 @@
 # Player
 
+The player is the prime example surface for Northstar's [Design Principles](../Design%20Principles.md). Every controls decision — what's visible, how large, how it responds — should be evaluated against those four principles before anything else.
+
+---
+
 ## What it is
 
 The player is how Northstar plays music. It does not own the audio — it delegates playback to the source where a track's audio lives. What Northstar owns is the playback queue, the controls, and the context: what's playing, what's next, and how it connects back to the library.
@@ -131,7 +135,9 @@ If a track in the queue has no source link, the player skips it automatically an
 
 ## Constraints
 
-- Northstar does not mix audio from multiple source types within a single queue in the initial version. If a queue contains tracks from different sources (e.g., one Spotify track followed by a YouTube track), playback may stutter or fail at the transition point. This is a known limitation — cross-source queues are deferred.
+- Northstar does not process or mix audio. A queue can contain tracks from different sources — when one track ends, the next source is initialised and playback begins. What Northstar does not support is simultaneous audio processing across sources: no crossfade, no EQ, no blending.
+
+> **Architecture note:** The primary challenge of cross-source queue transitions is the handoff — the next source's player (e.g. YouTube) must be initialised and ready before the current source session (e.g. Spotify SDK) closes, to avoid a noticeable gap between tracks. This is a sequencing and preload problem, not an audio processing problem. The architecture should account for pre-initialising the next source player before the current track ends.
 - Volume control affects Northstar's own output level. It does not override system volume or the source service's own volume.
 - Playback is not available offline in the initial version. All sources require an active connection.
 - The player does not provide equaliser or audio effects controls in the initial version.
