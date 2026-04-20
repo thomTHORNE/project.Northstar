@@ -55,7 +55,10 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
 - [ ] Tech stack decision
 - [ ] Data storage and persistence
 - [ ] Cross-source queue handoff (pre-initialisation)
+    > **Architecture note:** Discovery mode depends on polling `GET /v1/me/player/currently-playing` to detect track changes. Spotify does not push playback events — Northstar must pull. The polling interval should be tuned to balance responsiveness (detecting a track change quickly) against rate limit exposure. A sensible default is every 3–5 seconds while Discovery mode is active, with the interval backed off when the app is in the background.
+
 - [ ] Discovery mode polling (cadence, rate limits, background behaviour)
+    > **Architecture note:** Discovery mode depends on polling `GET /v1/me/player/currently-playing` to detect track changes. Spotify does not push playback events — Northstar must pull. The polling interval should be tuned to balance responsiveness (detecting a track change quickly) against rate limit exposure. A sensible default is every 3–5 seconds while Discovery mode is active, with the interval backed off when the app is in the background.
 - [ ] History retention window (undo eligibility)
 - [ ] ListeningEvent storage and query design
 

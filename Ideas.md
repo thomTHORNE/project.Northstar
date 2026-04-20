@@ -16,6 +16,16 @@ Possible configuration surface when the time comes: sync interval, selective opt
 
 ---
 
+## ListeningEvents for unsaved tracks
+
+During Discovery mode, Northstar currently only records a ListeningEvent when a discovered track already exists in the library. The question deferred here: should ListeningEvents also be recorded for tracks heard but never saved?
+
+The potential value is real — a history of unowned listening could reveal patterns like genre aversions, how often the user explores vs. stays in familiar territory, or discovery-to-save conversion rates. But this touches the data model (ListeningEvents are currently anchored to a `track_id`; unsaved tracks have no library entity to attach to), and it raises a product scope question: Northstar tracks the user's relationship with *their* music. Recording everything heard in Discovery mode, including what they chose not to keep, starts to blur that boundary.
+
+The right design — whether that means a "ghost" track record, a separate event schema with a raw source reference, or something else — depends on what questions this data is actually meant to answer, and whether genre data is available and structured enough to make those answers meaningful.
+
+---
+
 ## Habit Tracking
 
 A feature that surfaces patterns and insights from the user's listening history. The data foundation for this — the `ListeningEvent` entity — is already being collected in the initial version. Habit Tracking is what gets built on top of it.
