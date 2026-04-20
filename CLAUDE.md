@@ -31,7 +31,7 @@ Solo developer and founder. Strong product instincts. Technically capable — th
 ```
 Northstar.git/
 ├── CLAUDE.md               ← this file
-├── TASKS.md                ← phase-by-phase task tracker
+├── TASKS.md                ← phase-by-phase task tracker with inline reasoning notes
 ├── Ideas.md                ← deferred ideas, not committed to spec
 ├── Northstar in simple terms.md   ← anchor document, user-facing
 ├── PostmanApiTesting.md    ← Spotify API testing notes
@@ -96,23 +96,6 @@ Design Principles (`Spec/Design Principles.md`) govern all UI/UX decisions. The 
 
 ---
 
-## Architecture notes to carry into future phases
-
-**Cross-source queue transitions**
-The challenge is the handoff — the next source's player must be initialised and ready before the current source session closes, to avoid a gap. This is a sequencing and preload problem, not an audio processing problem. The architecture must account for pre-initialising the next source player before the current track ends.
-
-**Discovery mode polling**
-Tune polling cadence to balance responsiveness (catching a track change quickly) against rate limit exposure. ~3–5s while active, backed off when the app is in the background. This is a detail for the Architecture phase.
-
-**History retention window**
-The undo eligibility window has not been decided. It is flagged as a decision for the Architecture phase.
-
----
-
 ## Where things stand
 
-See `TASKS.md` for the current phase breakdown.
-
-**Completed:** Foundation (anchor doc, data model, design principles) + all 6 feature specs.
-
-**Next:** Phase 3 — User Flows. Suggested starting points: first run / onboarding, and Capture session end-to-end.
+See `TASKS.md` for the current phase breakdown and status.
