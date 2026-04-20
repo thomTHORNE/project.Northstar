@@ -38,13 +38,17 @@ Northstar.git/
 ├── Spec/
 │   ├── 1. Data Model.md    ← source of truth for all entities
 │   ├── Design Principles.md
-│   └── Features/
-│       ├── Capture Mode.md
-│       ├── Import.md
-│       ├── Notes.md
-│       ├── Player.md
-│       ├── Playlists.md
-│       └── Tags.md
+│   ├── Features/
+│   │   ├── Capture Mode.md
+│   │   ├── Import.md
+│   │   ├── Notes.md
+│   │   ├── Player.md
+│   │   ├── Playlists.md
+│   │   └── Tags.md
+│   └── Integrations/
+│       ├── Spotify.md
+│       ├── YouTube.md
+│       └── Google Drive.md
 ├── Brainstorm/             ← legacy, outdated. Do not reference.
 └── Functional Specification/  ← legacy, outdated. Do not reference.
 ```

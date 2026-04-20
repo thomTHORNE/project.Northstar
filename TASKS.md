@@ -25,8 +25,15 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
 
 ## Phase 3 — API Design
 
+### Integrations
+
+- [x] Spotify — [Spec/Integrations/Spotify.md](Spec/Integrations/Spotify.md)
+- [ ] YouTube — [Spec/Integrations/YouTube.md](Spec/Integrations/YouTube.md)
+- [ ] Google Drive — [Spec/Integrations/Google%20Drive.md](Spec/Integrations/Google%20Drive.md)
+
+### API surface
+
 - [ ] REST API surface
-- [ ] Authentication / OAuth flows (Spotify, YouTube, Google Drive)
 - [ ] Playback API (Library mode + Discovery mode)
 - [ ] Polling design for Discovery mode
 
