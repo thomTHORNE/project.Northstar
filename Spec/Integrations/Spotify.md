@@ -13,6 +13,8 @@ Spotify uses OAuth 2.0. Northstar implements the Authorization Code Flow with PK
 | Scope | Purpose |
 |---|---|
 | `streaming` | Use the Web Playback SDK to play audio within Northstar |
+| `user-read-email` | Required by the Web Playback SDK for SDK initialisation |
+| `user-read-private` | Required by the Web Playback SDK for SDK initialisation |
 | `user-read-playback-state` | Read the current playback state (track, position, device) |
 | `user-modify-playback-state` | Control playback: play, pause, skip, seek, set volume |
 | `user-read-currently-playing` | Poll the currently playing track during Discovery mode |
@@ -20,7 +22,7 @@ Spotify uses OAuth 2.0. Northstar implements the Authorization Code Flow with PK
 | `playlist-read-collaborative` | Read collaborative playlists for import |
 | `user-library-read` | Read the user's saved tracks and albums for import |
 
-Access tokens expire after one hour. Northstar refreshes the token automatically using the refresh token before expiry. If the refresh fails, the session is invalidated and the user is prompted to re-authenticate.
+Access tokens expire after one hour. Northstar refreshes the token automatically using the refresh token before expiry. With PKCE, the token refresh response may include a new refresh token — Northstar must store it if returned, as the previous token is invalidated. If the refresh fails, the session is invalidated and the user is prompted to re-authenticate.
 
 ---
 

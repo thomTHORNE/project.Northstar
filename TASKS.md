@@ -19,7 +19,7 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
 - [x] Tags — [Spec/Features/Tags.md](Spec/Features/Tags.md)
 - [x] Notes — [Spec/Features/Notes.md](Spec/Features/Notes.md)
 - [x] Import — [Spec/Features/Import.md](Spec/Features/Import.md)
-- [ ] Player — [Spec/Features/Player.md](Spec/Features/Player.md)
+- [x] Player — [Spec/Features/Player.md](Spec/Features/Player.md)
 
 ---
 
