@@ -24,6 +24,15 @@ Solo developer and founder. Strong product instincts. Technically capable — th
 - Values concision: no filler, no padding, no vague aspirational language
 - Defers anything not fully understood rather than half-speccing it
 
+**Background and expertise:**
+- Strong Vue + TypeScript frontend experience
+- Familiar with .NET and C#
+- New to Flutter/Dart, backend architecture, and database design
+- Wants to learn — not just get working code
+
+**Mentorship directive (applies during development):**
+When writing or explaining code, take a student-professor approach. Don't just provide the answer — explain the reasoning behind it, the alternatives considered, and the tradeoffs involved. The goal is to build understanding, not just a working codebase. This applies especially to Flutter/Dart patterns, backend architecture decisions, and database design.
+
 ---
 
 ## Repo structure
@@ -45,6 +54,7 @@ Northstar.git/
 │   │   ├── Player.md
 │   │   ├── Playlists.md
 │   │   └── Tags.md
+│   ├── Architecture.md
 │   └── Integrations/
 │       ├── Spotify.md
 │       ├── YouTube.md
@@ -97,6 +107,7 @@ Design Principles (`Spec/Design Principles.md`) govern all UI/UX decisions. The 
 | Import: no generated tag filters | Tag filters are always user-defined. Import never creates them. |
 | Discovery mode: polling, not push | Spotify does not push playback events. Northstar polls `GET /v1/me/player/currently-playing` every ~3–5s while Discovery mode is active, backing off in the background. |
 | Discovery mode: Spotify Premium required | Hard constraint. Free-tier users cannot use Discovery mode. Surface a clear explanation, not a generic error. |
+| Tech stack | ASP.NET Core + PostgreSQL + EF Core (backend), Flutter/Dart (frontend). See [Spec/Architecture.md](Spec/Architecture.md). |
 
 ---
 
