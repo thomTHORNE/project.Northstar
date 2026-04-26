@@ -23,6 +23,20 @@ This document records Northstar's technical stack decisions and the reasoning be
 
 ---
 
+## Platform targets
+
+| Platform | Approach | Spotify playback mechanism |
+|---|---|---|
+| iOS | Flutter native | `spotify_sdk` — wraps native Spotify iOS SDK |
+| Android | Flutter native | `spotify_sdk` — wraps native Spotify Android SDK |
+| Desktop (macOS, Windows) | Flutter web in browser | `spotify_sdk` — wraps Spotify Web Playback SDK |
+
+Desktop requires a browser with EME support. Chrome and Edge are supported. Safari is not supported for Spotify playback.
+
+Desktop packaging — wrapping the Flutter web build in a native shell (e.g. Electron) to remove the browser window — is deferred. The web build is the same regardless of how it is eventually packaged.
+
+---
+
 ## Decisions deferred to Phase 4
 
 - Deployment model (local, self-hosted, cloud)
