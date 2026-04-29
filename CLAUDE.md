@@ -81,6 +81,8 @@ The Data Model (`Spec/1. Data Model.md`) defines every entity and its fields. Fe
 
 Design Principles (`Spec/Design Principles.md`) govern all UI/UX decisions. The four principles are **Intentional**, **Snappy**, **Tactile**, and **Adaptive**. Every controls or layout decision should be evaluated against them.
 
+Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature — endpoints, payloads, and source-specific constraints. Feature specs stay behavior-focused and reference the relevant integration spec for implementation detail.
+
 ---
 
 ## Tone and writing style
@@ -108,6 +110,7 @@ Design Principles (`Spec/Design Principles.md`) govern all UI/UX decisions. The 
 | Discovery mode: polling, not push | Spotify does not push playback events. Northstar polls `GET /v1/me/player/currently-playing` every ~3–5s while Discovery mode is active, backing off in the background. |
 | Discovery mode: Spotify Premium required | Hard constraint. Free-tier users cannot use Discovery mode. Surface a clear explanation, not a generic error. |
 | Tech stack | ASP.NET Core + PostgreSQL + EF Core (backend), Flutter/Dart (frontend). See [Spec/Architecture.md](Spec/Architecture.md). |
+| `Link` type: `{ source, id }` | Source links store source-native IDs only — no URLs. Each integration is responsible for constructing URIs/URLs from IDs and extracting IDs from URLs at its own layer. |
 
 ---
 

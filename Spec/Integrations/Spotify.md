@@ -26,6 +26,22 @@ Access tokens expire after one hour. Northstar refreshes the token automatically
 
 ---
 
+## Source links
+
+Spotify source links are stored as `{ source: "spotify", id: "{spotify_id}" }`. The ID is the bare Spotify entity identifier — no URI prefix, no URL.
+
+| Entity | Example ID | Spotify URI (constructed at use time) |
+|---|---|---|
+| Track | `4iV5W9uYEdYUVa79Axb7Rh` | `spotify:track:4iV5W9uYEdYUVa79Axb7Rh` |
+| Artist | `0OdUWJ0sBjDrqHygGUXeCF` | `spotify:artist:0OdUWJ0sBjDrqHygGUXeCF` |
+| Album | `1vz94WpXDVYIEGja8cjFNa` | `spotify:album:1vz94WpXDVYIEGja8cjFNa` |
+
+The Spotify integration handler constructs the URI at the point of use — for playback (`PUT /v1/me/player/play`), for Discovery mode seeding, or for any other API call that requires a Spotify URI.
+
+At import time, the Spotify API returns entities with URIs in the format `spotify:{type}:{id}`. The handler extracts the ID segment and stores only that. If the user provides a Spotify URL (`https://open.spotify.com/track/{id}`), the handler extracts the ID from the path.
+
+---
+
 ## Playback mechanism
 
 Northstar uses the `spotify_sdk` Flutter package on all platforms. The underlying SDK it wraps differs by platform:

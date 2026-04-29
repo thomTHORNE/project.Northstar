@@ -35,7 +35,7 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
 ### Integrations
 
 - [ ] Spotify — [Spec/Integrations/Spotify.md](Spec/Integrations/Spotify.md)
-    - [ ] **Define source link format for Spotify entities** — `PUT /v1/me/player/play` requires a Spotify URI (`spotify:track:{id}`), not a web URL. Decide whether source_links for Spotify entities are stored as URIs or URLs, and document it in the spec. Affects both playback (Library mode) and Discovery mode seeding.
+    - [x] **Define source link format for Spotify entities** — Source links store bare IDs only: `{ source: "spotify", id: "{id}" }`. The Spotify handler constructs URIs at use time. IDs are extracted from URIs or URLs at import time. `Link` type defined in Data Model.
     - [ ] **Discovery mode autoplay dependency** — Spotify's autoplay after the seed track ends is a user account setting Northstar cannot read or control. If it's off, the session goes idle immediately after the seed track. Add an edge case to Spotify.md and Player.md (Discovery mode section).
     - [ ] **Progress tracking mechanism** — both the ListeningEvent threshold (40%) and the Capture Mode threshold (30s) require reliable playback position. Polling `currently-playing` at 3–5s is too coarse for a 30s threshold. Specify that the Web Playback SDK's `player_state_changed` events are the mechanism for progress tracking; polling is for track-change detection only. Add to Spotify.md.
     - [ ] **Discovery mode queue view is shallow** — `GET /v1/me/player/queue` returns ~20 items max. Player.md implies a full queue view during Discovery mode; add a note that the queue view is limited to what Spotify exposes.

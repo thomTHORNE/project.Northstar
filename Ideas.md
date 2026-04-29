@@ -4,6 +4,16 @@ A running list of ideas worth revisiting. Nothing here is committed to the spec 
 
 ---
 
+## YouTube track segments
+
+In v1, a YouTube source link maps one-to-one to a video — a track *is* a video. This breaks down for cases where a track is only a portion of a video: a live concert recording with multiple songs, a DJ set, a classical symphony split into movements.
+
+Supporting this would require extending the `Link` type beyond `{ source, id }` to include playback bounds — something like `{ source, id, start_seconds, end_seconds }`. YouTube's player API supports start/end parameters, so it's technically feasible.
+
+Worth revisiting once the YouTube integration is in use and it becomes clear how often this case appears in practice.
+
+---
+
 ## Automatic import
 
 A scheduled import that runs at a set interval, keeping the Northstar library in sync with a connected streaming service without requiring the user to trigger it manually.
