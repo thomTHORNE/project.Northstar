@@ -119,6 +119,8 @@ Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature
 ## Spec & docs workflow
 
 - TASKS.md entries must always have a unique ID and a severity rating.
+- Before drafting any spec section, check the task's `Deps:` field in TASKS.md. Surface all listed dependencies and propose batching them into the current work. Do not use an inline `[#N]` reference as a substitute for resolving a dependency.
+- Every decision made in conversation must be written into the spec before the task is considered done. Marking a task complete or moving on without writing the decision into the relevant spec file is not acceptable — the goal is to build the spec, not tick off tasks.
 
 ---
 

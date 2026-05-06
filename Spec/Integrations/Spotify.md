@@ -91,7 +91,7 @@ Northstar uses `spotify_sdk`'s `subscribeToPlayerState()` to track playback prog
 
 | Feature | Support |
 |---|---|
-| Import | Supported. Tracks, albums, and playlists can be imported from the user's Spotify library via the Web API. |
+| Import | Supported. Tracks, albums, and playlists can be imported from the user's Spotify library via the Web API. Owned and collaborative playlists are imported; followed playlists (owned by other users) are not. |
 | Playback | Supported. Requires Spotify Premium. Free-tier accounts cannot use Spotify playback controls. |
 | Discovery mode | Supported. Requires Spotify Premium. Northstar seeds playback with a library track, then polls `GET /v1/me/player/currently-playing` every ~3–5 seconds to observe Spotify's autoplay recommendations. |
 
