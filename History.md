@@ -36,3 +36,4 @@ Completed tasks, archived from TASKS.md. For logging purposes only — do not re
 - `#38` **Page size** — Use the maximum allowed per endpoint.
 - `#39` **Interruption behavior** — Resume from last persisted offset/cursor, not restart from scratch.
 - `#40` **User visibility** — Loading indicator for the duration of import.
+- `#8` **Import endpoints** — Service import: `GET /v1/me/tracks`, `GET /v1/me/albums`, `GET /v1/me/playlists`, `GET /v1/playlists/{id}/items`, `GET /v1/me/following?type=artist`. Link import: `GET /v1/tracks/{id}`, `GET /v1/albums/{id}`, `GET /v1/artists/{id}`, `GET /v1/playlists/{id}`. Note: `/playlists/{id}/tracks` is deprecated as of February 2026 — current endpoint is `/playlists/{id}/items`. Documented in Spotify.md → Import.
