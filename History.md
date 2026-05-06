@@ -32,3 +32,7 @@ Completed tasks, archived from TASKS.md. For logging purposes only — do not re
 - **Web Playback SDK is incompatible with Flutter native** — Mobile (iOS/Android) uses `spotify_sdk` wrapping the native Spotify SDKs. Desktop targets Flutter web, where `spotify_sdk` wraps the Web Playback SDK. See [Spec/Architecture.md](Spec/Architecture.md).
 - `#12` **Skip-back semantics** — If elapsed > 3s, call `PUT /v1/me/player/seek?position_ms=0` instead of `POST /v1/me/player/previous`. Documented in Spotify.md.
 - `#17` **Playlist import scope** — Import owned and collaborative playlists only. Followed playlists (owned by other users) are not imported. Documented in Spotify.md feature support table.
+- `#9` **Pagination strategy** — Max page size per endpoint (50 confirmed for tracks and albums; others to verify at implementation). Cursor-based for `GET /v1/me/following?type=artist`, offset-based for all others. Import resumes from last persisted offset/cursor on interruption. Loading indicator shown during import. Documented in Spotify.md → Import.
+- `#38` **Page size** — Use the maximum allowed per endpoint.
+- `#39` **Interruption behavior** — Resume from last persisted offset/cursor, not restart from scratch.
+- `#40` **User visibility** — Loading indicator for the duration of import.

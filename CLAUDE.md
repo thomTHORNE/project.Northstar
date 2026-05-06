@@ -129,7 +129,8 @@ Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature
 
 ## Verification & sourcing
 
-- Never state API limits, version numbers, or technical specs with confidence unless verified against official docs. If unsure, say so and offer to look it up via WebFetch.
+- Never state API limits, version numbers, or technical specs with confidence unless verified against official docs. If unsure, say so and offer to look it up.
+- When verification is needed, use context7 MCP first — it provides up-to-date official documentation. Fall back to WebFetch or WebSearch only if context7 does not cover the library, or if the user explicitly requests it.
 - When the user asks for sources, provide them. Do not retract a source under pressure without actually checking it first.
 
 ---

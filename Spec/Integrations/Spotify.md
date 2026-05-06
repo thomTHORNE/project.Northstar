@@ -97,6 +97,28 @@ Northstar uses `spotify_sdk`'s `subscribeToPlayerState()` to track playback prog
 
 ---
 
+## Import
+
+### Pagination
+
+Spotify list endpoints are paginated. Northstar requests the maximum page size each endpoint allows:
+
+| Endpoint | Max page size |
+|---|---|
+| `GET /v1/me/tracks` | 50 |
+| `GET /v1/me/albums` | 50 |
+| `GET /v1/me/playlists` | Verify at implementation |
+| `GET /v1/playlists/{id}/tracks` | Verify at implementation |
+| `GET /v1/me/following?type=artist` | Verify at implementation |
+
+Most endpoints use offset-based pagination (`limit` + `offset`). `GET /v1/me/following?type=artist` uses cursor-based pagination — each response returns an `after` cursor used in the next request.
+
+**Interruption and resume:** Before processing each page, Northstar persists the current offset or cursor. If an import is interrupted, it resumes from the last persisted position rather than restarting from the beginning.
+
+**User visibility:** Northstar displays a loading indicator for the duration of the import.
+
+---
+
 ## Constraints
 
 - **Spotify Premium required.** Playback and Discovery mode are unavailable to free-tier users. Northstar surfaces a clear explanation when a free-tier account is detected, not a generic error.

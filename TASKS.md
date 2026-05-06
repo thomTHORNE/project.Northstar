@@ -31,11 +31,6 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
     - [ ] `#18` **Verify App Remote SDK scope requirements on mobile** — `streaming`, `user-read-email`, and `user-read-private` are documented as Web Playback SDK requirements and marked Desktop only in the scopes table. Confirm at implementation time whether the App Remote SDK requires any additional OAuth scopes for iOS/Android. Update the scopes table if so.
     - [ ] `#8` **Import endpoints not specified** — Spotify.md commits to import support but lists no API endpoints. Add: `GET /v1/me/tracks`, `GET /v1/me/albums`, `GET /v1/me/playlists`, `GET /v1/playlists/{id}/tracks`, `GET /v1/me/following?type=artist` for service import; `GET /v1/tracks/{id}`, `GET /v1/albums/{id}`, `GET /v1/artists/{id}`, `GET /v1/playlists/{id}` for link import.
         Deps: #9
-    - [ ] `#9` **Pagination strategy** — Spotify endpoints return 20–50 items per page. Define how Northstar pages through large libraries: offset vs cursor, page size, and behavior if import is interrupted mid-page.
-        Deps: #8
-        - [ ] `#38` **Minor** — Page size per request (50 for most endpoints, 100 for playlist tracks — use the max?)
-        - [ ] `#39` **Gap** — Interruption behavior — resume from the last successful page, or restart from scratch
-        - [ ] `#40` **Gap** — User visibility during import — progress indicator, or fire-and-forget
     - [ ] `#10` **Initial playback / device activation flow** — On desktop, Northstar must initialise the Web Playback SDK, receive a device ID, then transfer playback to that device (`PUT /v1/me/player`) or target it in the play call before any audio can start. This sequence is undocumented.
     - [ ] `#11` **Rate limit / 429 handling** — No retry or backoff strategy defined. Specify: honor the `Retry-After` header on 429 responses, define an exponential backoff for retries, and define what the user sees if rate limiting persists beyond a reasonable threshold.
         Deps: #9
@@ -105,7 +100,6 @@ A cross-spec audit for inconsistencies, data model gaps, and implementation bloc
 | 3 | Blocker | `capture_session_id` has no source entity — UUID used in History and ListeningEvent but never defined or generated anywhere | Phase 1 | — |
 | 4 | Blocker | Tag association undo underspecified — entity_snapshot can't reconstruct many-to-many associations on undo | Phase 1 | — |
 | 8 | Blocker | Import endpoints not specified — Spotify.md commits to import support but lists no API endpoints | Phase 3 | #9 |
-| 9 | Blocker | Pagination strategy not defined — Spotify paginates at 20–50 items; no strategy defined for large library imports | Phase 3 | #8 |
 | 10 | Blocker | Initial playback device activation flow undocumented — desktop requires SDK init, device ID, and device transfer before any audio starts | Phase 3 | — |
 | 11 | Blocker | Rate limit / 429 handling not defined — no retry or backoff strategy for Spotify API calls | Phase 3 | #9 |
 | 5 | Gap | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | Phase 2 | — |
