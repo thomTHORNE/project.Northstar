@@ -9,7 +9,7 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
 - [x] Anchor document — [Northstar in simple terms.md](Northstar%20in%20simple%20terms.md)
 - [ ] Data Model — [Spec/1. Data Model.md](Spec/1.%20Data%20Model.md)
     - [ ] `#1` **Album track order has no storage mechanism** — The model says albums have ordered tracks but no field or join table can encode a track's position within a specific album. Either add a `track_ids` ordered array on Album or define a junction table (Album ↔ Track) with a `position` field. Affects Player (album tracklist) and Import (preserving Spotify album ordering).
-    - [ ] `#2` **Album deletion cascade describes wrong field** — The cascade says "their `album_id` is set to null" but the field is `album_ids` (UUID[]). Setting to null would wipe all album associations from the track. The correct behavior is removing the deleted album's ID from the array.
+    - [x] `#2` **Album deletion cascade describes wrong field** — The cascade says "their `album_id` is set to null" but the field is `album_ids` (UUID[]). Setting to null would wipe all album associations from the track. The correct behavior is removing the deleted album's ID from the array.
     - [ ] `#3` **`capture_session_id` has no source entity** — This UUID appears in History and ListeningEvent but is never generated or stored anywhere in the data model. Decide: add a lightweight Capture Session entity, or define it as a UUID generated when Capture Mode is enabled and stored on the Playlist. The Data Model needs to document the origin.
     - [ ] `#4` **Tag association undo is underspecified** — Undoing a tag deletion must restore all its associations across tracks, artists, albums, and playlists. History's `entity_snapshot` captures the tag's own state, not its association membership. Define how tag associations are recorded in History so the grouped undo can fully reverse a tag deletion.
 - [x] Design Principles — [Spec/Design Principles.md](Spec/Design%20Principles.md)
@@ -114,7 +114,6 @@ A cross-spec audit for inconsistencies, data model gaps, and implementation bloc
 | 9 | Blocker | Pagination strategy not defined — Spotify paginates at 20–50 items; no strategy defined for large library imports | Phase 3 |
 | 10 | Blocker | Initial playback device activation flow undocumented — desktop requires SDK init, device ID, and device transfer before any audio starts | Phase 3 |
 | 11 | Blocker | Rate limit / 429 handling not defined — no retry or backoff strategy for Spotify API calls | Phase 3 |
-| 2 | Gap | Album deletion cascade describes wrong field — says `album_id` (singular, nullable) but field is `album_ids` (UUID array) | Phase 1 |
 | 5 | Gap | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | Phase 2 |
 | 6 | Gap | Playlist filter OR logic stated in Tags spec but not Playlists spec | Phase 2 |
 | 7 | Gap | Tag-matched track ordering in playlists unspecified — spec says not user-controllable but never states the default | Phase 2 |
