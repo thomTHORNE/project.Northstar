@@ -20,7 +20,7 @@ Solo developer and founder. Strong product instincts. Technically capable — th
 
 **How they work:**
 - Prefers to reason decisions out loud before writing anything down
-- Reviews drafts before approving — don't write to files without showing a draft or getting a go-ahead
+- Reviews drafts before approving — "sure" or "ok" in response to "want me to write it?" means show a draft, not write to files. Writing to files requires explicit approval of a specific draft.
 - Values concision: no filler, no padding, no vague aspirational language
 - Defers anything not fully understood rather than half-speccing it
 
@@ -91,6 +91,7 @@ Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature
 - **Decisions are stated as facts.** "A note is deleted when the user clears the field." Not "A note could be deleted when..."
 - **Open questions are resolved before writing.** Don't leave inline TBDs or unresolved forks in the spec.
 - **Anything not fully understood is deferred to Ideas.md.** A half-specced feature is worse than no spec.
+- **If writing a spec section requires first resolving an open task, surface the dependency and stop.** Do not write the section with an inline reference to the unresolved item.
 - **No padding.** If a section doesn't have meaningful content, say so briefly and move on (see Notes.md → States as an example).
 
 ---
