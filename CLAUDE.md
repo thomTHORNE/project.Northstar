@@ -103,11 +103,12 @@ Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature
 | `source_links` not `service_links` | Source-agnostic from the start — Spotify, YouTube, and cloud storage are all valid sources |
 | Capture Mode: immediate persistence + `pending_review` | No staging buffer. New entities go straight to the library flagged for review. Existing entities are reused without flagging. |
 | ListeningEvent threshold: percentage-based | 40% of track duration (user-configurable). Not a flat time value. |
+| Capture Mode threshold: absolute time | 30 seconds elapsed (user-configurable). Not percentage-based — the question is "was this more than a skip?", which is not proportional to track length. |
 | History: global feed, not per-entity | Undo is grouped for bulk operations. `capture_session_id` links all entities created in a single capture session. |
 | Tag hierarchy: two-level max | `parent_ids` UUID[] — many-to-many. A tag with children cannot itself have a parent. |
 | Notes: auto-save, delete by clearing | No explicit save action. No confirmation on delete. Undo available within grace period. |
 | Import: no generated tag filters | Tag filters are always user-defined. Import never creates them. |
-| Discovery mode: polling, not push | Spotify does not push playback events. Northstar polls `GET /v1/me/player/currently-playing` every ~3–5s while Discovery mode is active, backing off in the background. |
+| Discovery mode: polling for track detection, events for progress | Spotify does not push playback events. Northstar polls `GET /v1/me/player/currently-playing` every ~3–5s during Discovery mode to detect track changes. Progress tracking (ListeningEvent and Capture Mode thresholds) uses `subscribeToPlayerState()` — polling is too coarse for threshold evaluation. |
 | Discovery mode: Spotify Premium required | Hard constraint. Free-tier users cannot use Discovery mode. Surface a clear explanation, not a generic error. |
 | Tech stack | ASP.NET Core + PostgreSQL + EF Core (backend), Flutter/Dart (frontend). See [Spec/Architecture.md](Spec/Architecture.md). |
 | `Link` type: `{ source, id }` | Source links store source-native IDs only — no URLs. Each integration is responsible for constructing URIs/URLs from IDs and extracting IDs from URLs at its own layer. |

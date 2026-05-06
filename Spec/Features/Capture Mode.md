@@ -20,7 +20,7 @@ See [Data Model — Playlist](../1.%20Data%20Model.md#playlist) for the `capture
 
 ### During an active session
 
-- A track is captured when the user has listened to it for a minimum of 30 seconds. This prevents tracks skipped early from being captured.
+- A track is captured when the user has listened to it for a minimum of 30 seconds. The threshold is absolute rather than percentage-based because the question it answers — "was this more than a skip?" — is not proportional to track length. A fixed gate is simpler to reason about and avoids triggering too easily on short tracks.
 - The minimum playtime threshold is user-configurable.
 - When a track is captured, it is added to the library and to the designated playlist simultaneously.
 - Captured tracks and any newly created related entities (artist, album) are flagged as `pending_review` in the library.

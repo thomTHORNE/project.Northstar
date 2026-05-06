@@ -67,6 +67,17 @@ Playback is initiated and controlled via the Spotify Connect Web API:
 | Get current track | `GET /v1/me/player/currently-playing` |
 | Get queue | `GET /v1/me/player/queue` |
 
+### Progress tracking
+
+Northstar uses `spotify_sdk`'s `subscribeToPlayerState()` to track playback progress. The method returns a stream of player state objects containing the current playback position, active track, and pause state. Updates fire on state changes — play, pause, seek, and track change — on both platforms:
+
+| Platform | Underlying mechanism |
+|---|---|
+| iOS / Android | App Remote SDK player state subscription |
+| Desktop | Web Playback SDK `player_state_changed` events |
+
+`subscribeToPlayerState()` is the mechanism for evaluating both the ListeningEvent threshold (40% of track duration) and the Capture Mode threshold (30 seconds elapsed). `GET /v1/me/player/currently-playing` polling is used only for track-change detection during Discovery mode — its ~3–5s cadence is too coarse for threshold evaluation.
+
 ---
 
 ## Feature support
@@ -87,6 +98,7 @@ Playback is initiated and controlled via the Spotify Connect Web API:
 - **Rate limits.** Spotify does not publish exact rate limit thresholds. Northstar's polling cadence (~3–5s during Discovery mode, backed off in the background) is designed to stay well within typical limits.
 - **Single active device.** Spotify allows playback on one device at a time. If the user starts playback on another Spotify client while Northstar is active, Northstar loses the active device.
 - **Market availability.** Some tracks are unavailable in certain regions. If a track is unavailable in the user's market, Northstar surfaces a playback error and advances the queue.
+- **Autoplay not guaranteed.** Spotify's autoplay feature is a user account setting Northstar cannot read or control. If autoplay is disabled, Discovery mode ends after the seed track completes.
 
 ---
 
@@ -99,5 +111,6 @@ Playback is initiated and controlled via the Spotify Connect Web API:
 | User starts playback on another Spotify device | Northstar detects the device handoff via the next poll or SDK event, pauses, and notifies the user that playback moved to another device. |
 | A track is unavailable in the user's market | Northstar surfaces a market availability error and advances to the next track. |
 | Spotify's autoplay ends during Discovery mode | Northstar detects that playback stopped via polling, returns to idle, and notifies the user that the Discovery session has ended. |
+| Spotify autoplay is disabled in the user's account settings | Discovery mode ends when the seed track completes. Northstar detects playback has stopped, returns to idle, and notifies the user. The message suggests checking that autoplay is enabled in Spotify settings. |
 | User is not authenticated when initiating playback | Northstar blocks playback and prompts the user to connect their Spotify account. |
 | Mobile: Spotify app is not installed | Northstar surfaces a message directing the user to install the Spotify app. Playback is blocked until resolved. |

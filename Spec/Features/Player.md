@@ -154,8 +154,9 @@ Northstar's role in Discovery mode is to observe, not to control. It watches wha
 **What Northstar does not control in Discovery mode:**
 
 - What tracks the service recommends.
-- Queue order or contents. The queue view reflects what the service has queued, read from `GET /v1/me/player/queue`, but Northstar does not modify it.
+- Queue order or contents. The queue view reflects what the service has queued, read from `GET /v1/me/player/queue`, but Northstar does not modify it. The queue is re-fetched on each track change, detected via `subscribeToPlayerState()`.
 - Skip behavior. Skipping is passed through to the service (`POST /v1/me/player/next`), which advances to the service's next recommendation.
+- Whether Spotify's autoplay is enabled. Autoplay is a user account setting. If it is disabled, the session ends after the seed track completes.
 
 **Ending a Discovery session:**
 
@@ -214,3 +215,4 @@ If the user attempts to enter Discovery mode without a supported service connect
 | The user skips during Discovery mode | Northstar calls `POST /v1/me/player/next` on the service, which advances to the service's next recommendation. Northstar does not control what that track is. |
 | Capture Mode is not active during a Discovery session | Discovered tracks are surfaced in the now playing view with an option to add to the library. They are not added automatically. |
 | The service's autoplay ends (e.g. Spotify stops recommending) | Northstar detects that playback has stopped via polling and returns to idle state. The user is notified that the Discovery session has ended. |
+| The user's Spotify autoplay is disabled | Discovery mode ends after the seed track. Northstar detects that playback stopped, returns to idle, and notifies the user with a message suggesting they check that autoplay is enabled in Spotify settings. |
