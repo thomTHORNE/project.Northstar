@@ -41,6 +41,18 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
     - [x] **Discovery mode queue view is shallow** — resolved by adding a queue re-fetch note to Player.md (re-fetched on each track change via `subscribeToPlayerState()`). Depth constraint not specced — exact limit unverified and considered an implementation detail.
     - [x] **Web Playback SDK is incompatible with Flutter native** — Resolved. Mobile (iOS/Android) uses `spotify_sdk` wrapping the native Spotify SDKs. Desktop targets Flutter web, where `spotify_sdk` wraps the Web Playback SDK. See [Spec/Architecture.md](Spec/Architecture.md) → Platform targets.
     - [ ] **Verify App Remote SDK scope requirements on mobile** — `streaming`, `user-read-email`, and `user-read-private` are documented as Web Playback SDK requirements and marked Desktop only in the scopes table. Confirm at implementation time whether the App Remote SDK requires any additional OAuth scopes for iOS/Android. Update the scopes table if so.
+    - [ ] **Import endpoints not specified** — Spotify.md commits to import support but lists no API endpoints. Add: `GET /v1/me/tracks`, `GET /v1/me/albums`, `GET /v1/me/playlists`, `GET /v1/playlists/{id}/tracks`, `GET /v1/me/following?type=artist` for service import; `GET /v1/tracks/{id}`, `GET /v1/albums/{id}`, `GET /v1/artists/{id}`, `GET /v1/playlists/{id}` for link import.
+    - [ ] **Pagination strategy** — Spotify endpoints return 20–50 items per page. Define how Northstar pages through large libraries: offset vs cursor, page size, and behavior if import is interrupted mid-page.
+    - [ ] **Initial playback / device activation flow** — On desktop, Northstar must initialise the Web Playback SDK, receive a device ID, then transfer playback to that device (`PUT /v1/me/player`) or target it in the play call before any audio can start. This sequence is undocumented.
+    - [ ] **Rate limit / 429 handling** — No retry or backoff strategy defined. Specify: honor the `Retry-After` header on 429 responses, define an exponential backoff for retries, and define what the user sees if rate limiting persists beyond a reasonable threshold.
+    - [ ] **Skip-back semantics** — Player.md's 3-second rule requires Spotify-specific implementation: if elapsed > 3s, call `PUT /v1/me/player/seek?position_ms=0` instead of `POST /v1/me/player/previous`. Must be documented in Spotify.md as a per-source behavior.
+    - [ ] **Mobile: Spotify app must be running, not just installed** — The App Remote SDK requires the Spotify app to be running (or capable of being backgrounded and resumed). The current constraint only says "installed" — this is insufficient. Define the expected state and behavior if the app is installed but not running.
+    - [ ] **Disconnect flow** — No behavior defined for when the user disconnects their Spotify account. Existing source links become unplayable. Define: whether tracks are flagged, what the user sees, and whether re-connecting restores playback without re-import.
+    - [ ] **OAuth initial flow / redirect URI strategy** — PKCE initial flow is mentioned but not sketched. Redirect URI strategy differs by platform: custom URL scheme on iOS/Android, localhost loopback or app-internal handler on the Flutter web build. Specify what URIs must be registered with Spotify's developer dashboard.
+    - [ ] **Play call payload shape** — `PUT /v1/me/player/play` accepts different payloads: `uris` (track array) or `context_uri` (album/playlist) with optional `offset` and `position_ms`. Specify which shape Northstar uses for Library-mode queue replay vs Discovery-mode seed track.
+    - [ ] **Playlist import scope** — `GET /v1/me/playlists` returns owned, followed, and collaborative playlists. Spec must define which are imported — likely owned and collaborative but not followed, though this is an open decision.
+    - [ ] **Image URL TTL** — Spotify image URLs (cover art, artist photos) may expire. Define whether Northstar caches them locally, proxies them through the backend, or stores them as opaque references and re-fetches on demand.
+    - [ ] **Track metadata staleness** — Tracks are frozen at import time. If a track's title or metadata changes on Spotify after import, Northstar's copy is unaffected. This is the correct behavior but should be stated explicitly in the spec.
 - [ ] YouTube — [Spec/Integrations/YouTube.md](Spec/Integrations/YouTube.md)
 - [ ] Google Drive — [Spec/Integrations/Google%20Drive.md](Spec/Integrations/Google%20Drive.md)
 
@@ -88,15 +100,30 @@ A phase-by-phase tracker for the Northstar spec writing project. Update this fil
 
 A cross-spec audit for inconsistencies, data model gaps, and implementation blockers. Each item is also tracked as a sub-task under its relevant phase above.
 
-| Priority | Issue | Phase |
-|---|---|---|
-| 1 | Album track order has no storage mechanism — no field or join table can encode position within a specific album | Phase 1 |
-| 2 | Album deletion cascade describes wrong field — says `album_id` (singular, nullable) but field is `album_ids` (UUID array) | Phase 1 |
-| 3 | `capture_session_id` has no source entity — UUID used in History and ListeningEvent but never defined or generated anywhere | Phase 1 |
-| 4 | Tag association undo underspecified — entity_snapshot can't reconstruct many-to-many associations on undo | Phase 1 |
-| 5 | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | Phase 2 |
-| 6 | Playlist filter OR logic stated in Tags spec but not Playlists spec | Phase 2 |
-| 7 | Tag-matched track ordering in playlists unspecified — spec says not user-controllable but never states the default | Phase 2 |
+**Severity key:**
+- **Blocker** — missing spec that would produce broken or undefined behavior at implementation time
+- **Gap** — incomplete or inconsistent spec that would cause a developer to make a wrong assumption
+- **Minor** — should be addressed but low risk if deferred; implementation can proceed without it
+
+| # | Severity | Issue | Phase |
+|---|---|---|---|
+| 1 | Blocker | Album track order has no storage mechanism — no field or join table can encode position within a specific album | Phase 1 |
+| 3 | Blocker | `capture_session_id` has no source entity — UUID used in History and ListeningEvent but never defined or generated anywhere | Phase 1 |
+| 4 | Blocker | Tag association undo underspecified — entity_snapshot can't reconstruct many-to-many associations on undo | Phase 1 |
+| 8 | Blocker | Import endpoints not specified — Spotify.md commits to import support but lists no API endpoints | Phase 3 |
+| 9 | Blocker | Pagination strategy not defined — Spotify paginates at 20–50 items; no strategy defined for large library imports | Phase 3 |
+| 10 | Blocker | Initial playback device activation flow undocumented — desktop requires SDK init, device ID, and device transfer before any audio starts | Phase 3 |
+| 11 | Blocker | Rate limit / 429 handling not defined — no retry or backoff strategy for Spotify API calls | Phase 3 |
+| 12 | Blocker | Skip-back semantics require Spotify-specific implementation — Player.md's 3-second rule maps to seek vs previous, not documented in Spotify.md | Phase 3 |
+| 2 | Gap | Album deletion cascade describes wrong field — says `album_id` (singular, nullable) but field is `album_ids` (UUID array) | Phase 1 |
+| 5 | Gap | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | Phase 2 |
+| 6 | Gap | Playlist filter OR logic stated in Tags spec but not Playlists spec | Phase 2 |
+| 7 | Gap | Tag-matched track ordering in playlists unspecified — spec says not user-controllable but never states the default | Phase 2 |
+| 13 | Gap | Mobile Spotify app state understated — App Remote SDK requires a running app, not just an installed one | Phase 3 |
+| 14 | Gap | Disconnect flow undefined — no behavior specified when the user disconnects their Spotify account | Phase 3 |
+| 15 | Gap | OAuth initial flow and redirect URI strategy not specified — platform-specific redirect URI requirements undocumented | Phase 3 |
+| 16 | Gap | Play call payload shape unspecified — Library-mode and Discovery-mode use different `PUT /v1/me/player/play` payload shapes | Phase 3 |
+| 17 | Gap | Playlist import scope undefined — owned vs followed vs collaborative playlists not distinguished | Phase 3 |
 
 ---
 
