@@ -115,6 +115,19 @@ Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature
 
 ---
 
+## Spec & docs workflow
+
+- TASKS.md entries must always have a unique ID and a severity rating.
+
+---
+
+## Verification & sourcing
+
+- Never state API limits, version numbers, or technical specs with confidence unless verified against official docs. If unsure, say so and offer to look it up via WebFetch.
+- When the user asks for sources, provide them. Do not retract a source under pressure without actually checking it first.
+
+---
+
 ## Where things stand
 
 See `TASKS.md` for the current phase breakdown and status.
