@@ -67,6 +67,13 @@ Playback is initiated and controlled via the Spotify Connect Web API:
 | Get current track | `GET /v1/me/player/currently-playing` |
 | Get queue | `GET /v1/me/player/queue` |
 
+### Skip-back behavior
+
+Player.md defines skip-back as: return to the previous track, or restart the current track if more than 3 seconds have elapsed. Spotify's `POST /v1/me/player/previous` always returns to the previous track — it does not accept a position threshold. Northstar implements the 3-second rule by checking elapsed position from `subscribeToPlayerState()` before issuing the command:
+
+- Elapsed < 3s: call `POST /v1/me/player/previous`
+- Elapsed ≥ 3s: call `PUT /v1/me/player/seek?position_ms=0`
+
 ### Progress tracking
 
 Northstar uses `spotify_sdk`'s `subscribeToPlayerState()` to track playback progress. The method returns a stream of player state objects containing the current playback position, active track, and pause state. Updates fire on state changes — play, pause, seek, and track change — on both platforms:
