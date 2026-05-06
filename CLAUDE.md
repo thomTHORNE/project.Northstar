@@ -41,6 +41,7 @@ When writing or explaining code, take a student-professor approach. Don't just p
 Northstar.git/
 ├── CLAUDE.md               ← this file
 ├── TASKS.md                ← phase-by-phase task tracker with inline reasoning notes
+├── History.md              ← completed tasks, archived from TASKS.md. Do not read or search — if historical context is needed, the user will provide it manually.
 ├── Ideas.md                ← deferred ideas, not committed to spec
 ├── Northstar in simple terms.md   ← anchor document, user-facing
 ├── PostmanApiTesting.md    ← Spotify API testing notes
