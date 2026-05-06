@@ -99,6 +99,8 @@ Northstar uses `spotify_sdk`'s `subscribeToPlayerState()` to track playback prog
 
 ## Import
 
+All import operations use the Spotify Web API directly. The Spotify SDK is not involved in import.
+
 ### Service import
 
 | Endpoint | Returns |

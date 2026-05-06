@@ -37,6 +37,29 @@ Desktop packaging — wrapping the Flutter web build in a native shell (e.g. Ele
 
 ---
 
+## Integration layers — Spotify
+
+Northstar uses two distinct Spotify integration points, differentiated by communication channel rather than feature domain.
+
+**SDK (`spotify_sdk`) — local, push-based**
+
+Handles direct device-level communication:
+- Desktop: registers Northstar as a Spotify Connect device and streams audio in the browser (Web Playback SDK)
+- Mobile: remote-controls the Spotify app on the device via a local connection (App Remote SDK)
+- Both platforms: `subscribeToPlayerState()` delivers real-time player state updates (position, track, pause state) as a push subscription — used for ListeningEvent and Capture Mode threshold evaluation
+
+**Spotify Web API — cloud-mediated, pull-based**
+
+All REST calls to `api.spotify.com`. The SDK is not involved:
+- Import — all service import and link import endpoints
+- Playback commands (play, pause, seek, skip, volume) — routed through Spotify Connect's cloud to the active device
+- Discovery mode polling (`GET /v1/me/player/currently-playing`) — track-change detection
+- Queue fetching (`GET /v1/me/player/queue`)
+
+Import does not require Spotify Premium. Premium is required only for playback API calls.
+
+---
+
 ## Decisions deferred to Phase 4
 
 - Deployment model (local, self-hosted, cloud)
