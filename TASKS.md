@@ -2,7 +2,7 @@
 
 Northstar spec writing tracker. Structure: Alignment → Goal → Item.
 
----
+
 
 ## Alignment 1 — Foundation
 
@@ -16,7 +16,7 @@ All open issues in the data model are blockers — they must be resolved before 
 - [ ] `#1.3` **Tag association undo is underspecified** — Undoing a tag deletion must restore all its associations across tracks, artists, albums, and playlists. History's `entity_snapshot` captures the tag's own state, not its association membership. Define how tag associations are recorded in History so the grouped undo can fully reverse a tag deletion.
 :::
 
----
+
 
 ## Alignment 2 — Feature Specs
 
@@ -33,7 +33,7 @@ All open issues in the data model are blockers — they must be resolved before 
 - [ ] `#3.1` **"Grace period" terminology conflict** — Notes uses "grace period" for undo window (how long a deletion can be undone). Capture Mode uses the same term for the pending_review auto-action timer. These are different concepts. Notes should reference the History retention window instead.
 :::
 
----
+
 
 ## Alignment 3 — Integrations
 
@@ -75,7 +75,7 @@ REST and playback API surface for Northstar's backend.
 - [ ] `#7.3` Polling design for Discovery mode
 :::
 
----
+
 
 ## Alignment 4 — Architecture
 
@@ -92,7 +92,7 @@ Deferred decisions to be resolved in Phase 4.
 - [ ] `#8.6` ListeningEvent storage and query design
 :::
 
----
+
 
 ## Alignment 5 — User Flows
 
@@ -107,7 +107,7 @@ End-to-end flows documenting how users move through Northstar's key features.
 - [ ] `#9.6` Discovery mode session
 :::
 
----
+
 
 ## Alignment 6 — UI/UX
 
@@ -118,7 +118,7 @@ Where and how Discovery mode is surfaced in the UI.
 - [ ] `#10.2` Discovery mode — trigger visibility (only surfaced when a supported source is active)
 :::
 
----
+
 
 ## Spec review — open issues
 
@@ -141,7 +141,7 @@ Where and how Discovery mode is surfaced in the UI.
 | 4.6 | Gap | OAuth initial flow and redirect URI strategy not specified — platform-specific redirect URI requirements undocumented | — |
 | 4.7 | Gap | Play call payload shape unspecified — Library-mode and Discovery-mode use different `PUT /v1/me/player/play` payload shapes | #4.2 |
 
----
+
 
 ## Ideas — deferred, not in active scope
 
