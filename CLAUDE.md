@@ -60,11 +60,14 @@ Northstar.git/
 │       ├── Spotify.md
 │       ├── YouTube.md
 │       └── Google Drive.md
+├── Learning/               ← topic explainers; not project spec (see note below)
 ├── Brainstorm/             ← legacy, outdated. Do not reference.
 └── Functional Specification/  ← legacy, outdated. Do not reference.
 ```
 
 **Active work lives in `Spec/`.** The `Brainstorm/` and `Functional Specification/` folders are from before the current spec effort and will eventually be deleted.
+
+**Learning directory:** `Learning/` contains topic-based explainers that branch off from project work into broader concepts. Files are written with Northstar as the running example but cover general technical ground (auth flows, database patterns, Flutter idioms, etc.). They are not spec, do not define behavior or decisions, and carry no authority over implementation. Read them when the user references a prior explanation or asks to revisit a concept.
 
 ---
 
