@@ -129,7 +129,14 @@ Northstar.git/
 ## Spec & docs workflow
 
 - Never write to files without explicit approval of a specific draft. "Sure" or "ok" in response to "want me to write it?" means show a draft first — not write to files.
-- TASKS.md uses an Alignment → Goal → Item hierarchy. Goals carry `#N` IDs. Items carry `#N.N` decimal IDs scoped to their goal. Severity lives in the spec review table, not on individual items.
+- TASKS.md uses an Alignment → Goal → Item hierarchy. Goals carry `#N` IDs. Items carry `#N.N` decimal IDs scoped to their goal. Severity (`BLOCKER` / `GAP` / `MINOR`) appears both on the item line and in the spec review table.
+- TASKS.md item format: first line carries the checkbox, ID, tags, and bold title; the description goes on the next line indented by 4 spaces. Tag order: severity, then `Deps: #X.X` if any. Items without a description are single-line. `<br>` separates consecutive items in a goal. Status: `[ ]` Open (default), `[x]` Pending review (drafted, awaiting review before moving to History.md).
+
+  Example:
+  ```
+  - [ ] `#4.7` `GAP` `Deps: #4.2` **Play call payload shape**
+      `PUT /v1/me/player/play` accepts different payloads…
+  ```
 - Before drafting any spec section, check the item's `Deps:` field in TASKS.md. Surface all listed dependencies and propose batching them into the current work. Do not use an inline `[#N.N]` reference as a substitute for resolving a dependency.
 - Every decision made in conversation must be written into the spec before the task is considered done. Marking a task complete or moving on without writing the decision into the relevant spec file is not acceptable — the goal is to build the spec, not tick off tasks.
 - When a task is resolved, immediately move it from TASKS.md to History.md. Do not leave completed items in TASKS.md.
