@@ -177,38 +177,38 @@ Where and how Discovery mode is surfaced in the UI.
 
 | ID | Severity | Status | Issue | Deps |
 |---|---|---|---|---|
-| 1.1 | Blocker | Open | Album track order has no storage mechanism — no field or join table can encode position within a specific album | — |
-| 1.2 | Blocker | Open | `capture_session_id` has no source entity — UUID used in History and ListeningEvent but never defined or generated anywhere | — |
-| 1.3 | Blocker | Open | Tag association undo underspecified — entity_snapshot can't reconstruct many-to-many associations on undo | — |
-| 4.2 | Blocker | Open | Initial playback device activation flow undocumented — desktop requires SDK init, device ID, and device transfer before any audio starts | — |
-| 4.3 | Blocker | Open | Rate limit / 429 handling not defined — no retry or backoff strategy for Spotify API calls | — |
-| 7.1 | Blocker | Open | REST API surface not specified | — |
-| 7.2 | Blocker | Open | Playback API not specified (Library mode + Discovery mode) | #4.2, #4.7 |
-| 8.2 | Blocker | Open | Data storage and persistence not decided | — |
-| 8.3 | Blocker | Open | Cross-source queue handoff (pre-initialisation) not designed | — |
-| 8.6 | Blocker | Open | ListeningEvent storage and query design not specified | — |
-| 2.1 | Gap | Open | Playlist filter OR logic stated in Tags spec but not Playlists spec | — |
-| 2.2 | Gap | Open | Tag-matched track ordering in playlists unspecified — spec says not user-controllable but never states the default | — |
-| 3.1 | Gap | Open | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | — |
-| 4.5 | Gap | Open | Disconnect flow undefined — no behavior specified when the user disconnects their Spotify account | — |
-| 4.6 | Gap | Pending review | OAuth initial flow / redirect URI strategy — PKCE + App Remote SDK flows and redirect URIs specified | — |
-| 4.7 | Gap | Open | Play call payload shape unspecified — Library-mode and Discovery-mode use different `PUT /v1/me/player/play` payload shapes | #4.2 |
-| 4.8 | Gap | Open | Image URL TTL undefined — Spotify image URLs may expire; caching/proxying strategy not decided | — |
-| 7.3 | Gap | Open | Polling design for Discovery mode not specified | — |
-| 8.1 | Gap | Open | Tech stack decision not documented in Architecture spec | — |
-| 8.4 | Gap | Open | Discovery mode polling cadence / rate limits / background behaviour not tuned | — |
-| 8.5 | Gap | Open | History retention window (undo eligibility) not specified | — |
-| 9.1 | Gap | Open | First run / onboarding flow not documented | — |
-| 9.2 | Gap | Open | Importing music flow not documented (service import + link import) | — |
-| 9.3 | Gap | Open | Building a playlist flow not documented (manual + tag-driven) | — |
-| 9.4 | Gap | Open | Capture session end-to-end flow not documented | — |
-| 9.5 | Gap | Open | Reviewing pending (captured) items flow not documented | — |
-| 9.6 | Gap | Open | Discovery mode session flow not documented | — |
-| 10.1 | Gap | Open | Discovery mode trigger placement undecided (context menu, player controls, or both) | — |
-| 10.2 | Gap | Open | Discovery mode trigger visibility rules undecided | — |
-| 4.1 | Minor | Open | App Remote SDK scope requirements need verification at implementation time | — |
-| 4.4 | Minor | Open | Mobile constraint says "installed" but App Remote SDK requires Spotify app running; verify behaviour at implementation | — |
-| 4.9 | Minor | Open | Track metadata staleness — correct behavior (tracks frozen at import) not stated explicitly in spec | — |
+| 1.1 | Blocker | [ ] | Album track order has no storage mechanism — no field or join table can encode position within a specific album | — |
+| 1.2 | Blocker | [ ] | `capture_session_id` has no source entity — UUID used in History and ListeningEvent but never defined or generated anywhere | — |
+| 1.3 | Blocker | [ ] | Tag association undo underspecified — entity_snapshot can't reconstruct many-to-many associations on undo | — |
+| 4.2 | Blocker | [ ] | Initial playback device activation flow undocumented — desktop requires SDK init, device ID, and device transfer before any audio starts | — |
+| 4.3 | Blocker | [ ] | Rate limit / 429 handling not defined — no retry or backoff strategy for Spotify API calls | — |
+| 7.1 | Blocker | [ ] | REST API surface not specified | — |
+| 7.2 | Blocker | [ ] | Playback API not specified (Library mode + Discovery mode) | #4.2, #4.7 |
+| 8.2 | Blocker | [ ] | Data storage and persistence not decided | — |
+| 8.3 | Blocker | [ ] | Cross-source queue handoff (pre-initialisation) not designed | — |
+| 8.6 | Blocker | [ ] | ListeningEvent storage and query design not specified | — |
+| 2.1 | Gap | [ ] | Playlist filter OR logic stated in Tags spec but not Playlists spec | — |
+| 2.2 | Gap | [ ] | Tag-matched track ordering in playlists unspecified — spec says not user-controllable but never states the default | — |
+| 3.1 | Gap | [ ] | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | — |
+| 4.5 | Gap | [ ] | Disconnect flow undefined — no behavior specified when the user disconnects their Spotify account | — |
+| 4.6 | Gap | [x] | OAuth initial flow / redirect URI strategy — PKCE + App Remote SDK flows and redirect URIs specified | — |
+| 4.7 | Gap | [ ] | Play call payload shape unspecified — Library-mode and Discovery-mode use different `PUT /v1/me/player/play` payload shapes | #4.2 |
+| 4.8 | Gap | [ ] | Image URL TTL undefined — Spotify image URLs may expire; caching/proxying strategy not decided | — |
+| 7.3 | Gap | [ ] | Polling design for Discovery mode not specified | — |
+| 8.1 | Gap | [ ] | Tech stack decision not documented in Architecture spec | — |
+| 8.4 | Gap | [ ] | Discovery mode polling cadence / rate limits / background behaviour not tuned | — |
+| 8.5 | Gap | [ ] | History retention window (undo eligibility) not specified | — |
+| 9.1 | Gap | [ ] | First run / onboarding flow not documented | — |
+| 9.2 | Gap | [ ] | Importing music flow not documented (service import + link import) | — |
+| 9.3 | Gap | [ ] | Building a playlist flow not documented (manual + tag-driven) | — |
+| 9.4 | Gap | [ ] | Capture session end-to-end flow not documented | — |
+| 9.5 | Gap | [ ] | Reviewing pending (captured) items flow not documented | — |
+| 9.6 | Gap | [ ] | Discovery mode session flow not documented | — |
+| 10.1 | Gap | [ ] | Discovery mode trigger placement undecided (context menu, player controls, or both) | — |
+| 10.2 | Gap | [ ] | Discovery mode trigger visibility rules undecided | — |
+| 4.1 | Minor | [ ] | App Remote SDK scope requirements need verification at implementation time | — |
+| 4.4 | Minor | [ ] | Mobile constraint says "installed" but App Remote SDK requires Spotify app running; verify behaviour at implementation | — |
+| 4.9 | Minor | [ ] | Track metadata staleness — correct behavior (tracks frozen at import) not stated explicitly in spec | — |
 
 
 
