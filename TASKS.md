@@ -38,9 +38,9 @@ All open issues in the data model are blockers — they must be resolved before 
 ## Alignment 3 — Integrations
 
 ::: toggle `#4` Spotify
-[Spec/Integrations/Spotify.md](Spec/Integrations/Spotify.md)
+[Spec/Integrations/Spotify/Spotify.md](Spec/Integrations/Spotify/Spotify.md)
 
-See [Spec/Architecture.md](Spec/Architecture.md) → Integration layers for the SDK vs Web API breakdown.
+See [Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md) → Integration layers for the SDK vs Web API breakdown.
 - - -
 - [ ] `#4.1` **Verify App Remote SDK scope requirements on mobile** — `streaming`, `user-read-email`, and `user-read-private` are documented as Web Playback SDK requirements and marked Desktop only in the scopes table. Confirm at implementation time whether the App Remote SDK requires any additional OAuth scopes for iOS/Android. Update the scopes table if so.
 - [ ] `#4.2` **Initial playback / device activation flow** — On desktop, Northstar must initialise the Web Playback SDK, receive a device ID, then transfer playback to that device (`PUT /v1/me/player`) or target it in the play call before any audio can start. This sequence is undocumented.
@@ -82,7 +82,7 @@ REST and playback API surface for Northstar's backend.
 ::: toggle `#8` Architecture
 Deferred decisions to be resolved in Phase 4.
 
-[Spec/Architecture.md](Spec/Architecture.md)
+[Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md)
 - - -
 - [ ] `#8.1` Tech stack decision
 - [ ] `#8.2` Data storage and persistence

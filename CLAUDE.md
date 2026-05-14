@@ -55,9 +55,11 @@ Northstar.git/
 │   │   ├── Player.md
 │   │   ├── Playlists.md
 │   │   └── Tags.md
-│   ├── Architecture.md
+│   ├── Architecture/
+│   │   └── Architecture.md
 │   └── Integrations/
-│       ├── Spotify.md
+│       ├── Spotify/
+│       │   └── Spotify.md
 │       ├── YouTube.md
 │       └── Google Drive.md
 ├── Learning/               ← topic explainers; not project spec (see note below)
@@ -73,19 +75,23 @@ Northstar.git/
 
 ## Spec structure
 
-Every feature spec follows this structure:
+`Spec/` is the complete reference for building Northstar — behavior, structure, mechanics, and technical decisions. It is divided into five domains, each with a distinct purpose:
+
+| Domain | Purpose |
+|---|---|
+| **Data Model** | The canonical definition of every entity — fields, types, relationships. The single source of truth. If an entity or field isn't defined here, it doesn't exist in Northstar. Feature specs reference it; they never redefine it. |
+| **Design Principles** | The four principles (Intentional, Snappy, Tactile, Adaptive) that govern all UI/UX decisions. A lens applied to every feature — not a spec in its own right. |
+| **Features/** | Behavioral specifications — what each feature does, the rules governing it, its states, constraints, and edge cases. No implementation detail lives here; that belongs in Integrations. |
+| **Architecture/** | Structural and technical decisions: tech stack, integration layers, cross-cutting concerns. Records the why behind major choices. Flow diagrams showing system mechanics live here. |
+| **Integrations/** | Source-specific implementation detail: auth flows, endpoints, payloads, SDK mechanics, and per-source constraints. Feature specs stay behavior-focused and reference the relevant integration spec for the how. Integrations that grow in scope become their own subfolders. |
+
+**Feature spec structure** — every file in `Features/` follows this format:
 
 1. **What it is** — one paragraph, plain English
 2. **Behavior** — the rules, broken into named subsections
 3. **States** — meaningful states the feature or entity can be in (even if not persisted — include the section and explain if states are runtime-only)
 4. **Constraints** — hard limits, version-scoped limitations
 5. **Edge cases** — a table of scenario → behavior
-
-The Data Model (`Spec/1. Data Model.md`) defines every entity and its fields. Feature specs reference it — they don't redefine it. If a feature spec needs to establish a rule about an entity, it references the entity by name and links to the data model.
-
-Design Principles (`Spec/Design Principles.md`) govern all UI/UX decisions. The four principles are **Intentional**, **Snappy**, **Tactile**, and **Adaptive**. Every controls or layout decision should be evaluated against them.
-
-Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature — endpoints, payloads, and source-specific constraints. Feature specs stay behavior-focused and reference the relevant integration spec for implementation detail.
 
 ---
 
@@ -115,7 +121,7 @@ Integration specs (`Spec/Integrations/`) hold the API mechanics for each feature
 | Import: no generated tag filters | Tag filters are always user-defined. Import never creates them. |
 | Discovery mode: polling for track detection, events for progress | Spotify does not push playback events. Northstar polls `GET /v1/me/player/currently-playing` every ~3–5s during Discovery mode to detect track changes. Progress tracking (ListeningEvent and Capture Mode thresholds) uses `subscribeToPlayerState()` — polling is too coarse for threshold evaluation. |
 | Discovery mode: Spotify Premium required | Hard constraint. Free-tier users cannot use Discovery mode. Surface a clear explanation, not a generic error. |
-| Tech stack | ASP.NET Core + PostgreSQL + EF Core (backend), Flutter/Dart (frontend). See [Spec/Architecture.md](Spec/Architecture.md). |
+| Tech stack | ASP.NET Core + PostgreSQL + EF Core (backend), Flutter/Dart (frontend). See [Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md). |
 | `Link` type: `{ source, id }` | Source links store source-native IDs only — no URLs. Each integration is responsible for constructing URIs/URLs from IDs and extracting IDs from URLs at its own layer. |
 
 ---

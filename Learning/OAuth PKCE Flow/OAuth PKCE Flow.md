@@ -6,7 +6,7 @@ When Northstar wants to read your Spotify library or control playback, it needs 
 
 OAuth solves this by letting Spotify issue a limited, revocable token to Northstar on your behalf. You log into Spotify directly (not via Northstar), approve specific permissions, and Spotify hands Northstar a token that only covers those permissions. Northstar never sees your password.
 
----
+
 
 ## The client secret problem
 
@@ -18,7 +18,7 @@ OAuth was originally designed for server-side web apps. The flow worked like thi
 
 The `client_secret` is like a password your app uses to identify itself to Spotify. It works fine when the secret lives on a server you control. But Northstar is a client app — iOS, Android, or desktop. Any secret embedded in a client app binary can be extracted. Shipping a client secret is effectively making it public.
 
----
+
 
 ## The PKCE solution
 
@@ -31,7 +31,7 @@ Two values are generated fresh for every login:
 
 The logic: Spotify stores the challenge when the login starts. When the app later sends the verifier, Spotify hashes it and checks it matches. Only the entity that generated the verifier could produce a matching challenge — no pre-shared secret required.
 
----
+
 
 ## The full flow, with Northstar as the example
 
@@ -99,19 +99,49 @@ Spotify hashes the `code_verifier` and checks it against the `code_challenge` it
 
 Northstar stores both tokens securely on device using `flutter_secure_storage` (iOS Keychain on iOS, Android Keystore on Android, system credential store on desktop). The access token is used for all subsequent Spotify API calls. The refresh token is used to get a new access token when the current one expires after one hour.
 
----
 
-## Where this logic lives in Northstar
 
-The PKCE flow runs in Flutter, not the .NET backend.
+## Two auth flows in Northstar
 
-The `spotify_sdk` Flutter package needs a Spotify access token to initialize itself for playback on both platforms — so Flutter needs the token regardless. Since Northstar is also a single-user personal app, there is no security advantage to moving token storage to the server. `flutter_secure_storage` provides appropriate OS-level protection.
+Northstar uses two distinct Spotify auth mechanisms, depending on what it needs to do.
 
-When the .NET backend needs to make Spotify API calls (e.g., during import), Flutter passes the current access token with the request. The backend uses it for that call and does not store it independently.
+### PKCE — for Web API access (all platforms)
 
-If Northstar ever needed multiple users, or background jobs that run without Flutter being active, the backend would own the tokens instead. It doesn't in v1.
+The PKCE flow described above produces a Web API access token. This token is used for every Spotify Web API call: reading the library for import, controlling playback via REST endpoints (`PUT /v1/me/player/play`, etc.), polling the currently playing track, and so on.
 
----
+This flow runs in Flutter on all platforms. Both tokens (access and refresh) are stored securely on device using `flutter_secure_storage`. When the .NET backend needs to make a Spotify API call — during import, for example — Flutter passes the current access token with the request. The backend uses it for that call and does not store it independently.
+
+### App Remote SDK auth — for SDK-based playback (mobile only)
+
+On iOS and Android, Northstar uses `spotify_sdk` to remote-control the Spotify app via the App Remote SDK. This SDK connection requires its own token, obtained through a separate auth mechanism that the Spotify iOS/Android SDKs handle internally.
+
+Rather than the PKCE code-exchange flow, the App Remote SDK opens the Spotify app (or prompts the user to install it) and receives an access token **directly in the redirect URL** — no authorization code, no token exchange step:
+
+```
+northstar://spotify-callback?access_token=SDK_TOKEN&...
+```
+
+This token is distinct from the Web API token. It authorizes the SDK connection to the Spotify app and is used by `spotify_sdk` internally for playback control. It is not used for Web API calls.
+
+Both redirects land at `northstar://spotify-callback`, but the parameters differ:
+
+| Flow | Parameters in redirect |
+|---|---|
+| PKCE (Web API) | `code=AUTH_CODE&state=STATE` |
+| App Remote SDK | Contains SDK access token directly |
+
+The `spotify_sdk` Flutter package handles the App Remote SDK auth internally via `connectToSpotifyRemote()`. Northstar's custom URL scheme handler needs to distinguish between the two redirect types and route each to the appropriate handler.
+
+### Summary
+
+| What | Flow | Platforms |
+|---|---|---|
+| Web API calls (import, REST playback control, polling) | PKCE | All |
+| SDK connection (App Remote playback control) | App Remote SDK auth | Mobile only |
+
+On desktop, only PKCE is needed. On mobile, both flows run — PKCE for Web API access, App Remote SDK auth for the SDK connection.
+
+
 
 ## URI vs URL
 
@@ -123,7 +153,7 @@ In practice: `https://accounts.spotify.com/authorize` is a URL. `spotify:track:4
 
 OAuth specs use the term "redirect URI" because the redirect destination can be either form: an `http://` URL pointing at a real server, or a custom scheme like `northstar://` that the OS routes to an app.
 
----
+
 
 ## Redirect URIs: getting the code back
 
@@ -139,17 +169,17 @@ This is why `http://` and `northstar://` behave differently: `http://` tells the
 
 Custom URL schemes are not globally enforced — two apps could register the same scheme. Using the app's name makes accidental collisions unlikely. For a production app, Apple recommends a reverse-domain format (`com.northstar.app://`), but `northstar://` works fine for a personal app.
 
-### Desktop (Flutter web build): localhost redirect
+### Desktop (Flutter web build): loopback redirect
 
-On desktop, Northstar runs as a Flutter web build served locally at a fixed address — e.g., `http://localhost:4040`. Spotify redirects to `http://localhost:4040/callback?code=...`. Since Northstar is already running at that address, the browser navigates there and the app reads the authorization code from the URL query parameters.
+On desktop, Northstar runs as a Flutter web build served locally at a fixed address — e.g., `http://127.0.0.1:4040`. Spotify redirects to `http://127.0.0.1:4040/callback?code=...`. Since Northstar is already running at that address, the browser navigates there and the app reads the authorization code from the URL query parameters.
 
-The localhost port must be a fixed, known value — Spotify's developer dashboard requires exact redirect URIs and does not support wildcards or variable ports. The exact port is chosen at implementation time and registered in the dashboard.
+Spotify's own documentation uses `127.0.0.1` rather than `localhost` for the loopback address — and since the registered URI must exactly match what the app sends in the request, Northstar must use `127.0.0.1` consistently. The port must be a fixed, known value; Spotify does not support wildcards or variable ports. The exact port is chosen at implementation time and registered in the dashboard.
 
 ### What must be registered in Spotify's developer dashboard
 
 Both URIs must be listed explicitly:
 
 - `northstar://spotify-callback` — for iOS and Android
-- `http://localhost:{PORT}/callback` — for desktop (exact port determined at implementation)
+- `http://127.0.0.1:{PORT}/callback` — for desktop (exact port determined at implementation)
 
 Spotify rejects redirects to any URI not on the registered list. This prevents an attacker from injecting a redirect to a destination they control and stealing the authorization code mid-flow.
