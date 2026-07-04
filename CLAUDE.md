@@ -71,6 +71,8 @@ Northstar.git/
 
 **Learning directory:** `Learning/` contains topic-based explainers that branch off from project work into broader concepts. Files are written with Northstar as the running example but cover general technical ground (auth flows, database patterns, Flutter idioms, etc.). They are not spec, do not define behavior or decisions, and carry no authority over implementation. Read them when the user references a prior explanation or asks to revisit a concept.
 
+Structure: one folder per topic, named for the concept. Inside, a main explainer `.md` named the same as the folder holds the teaching narrative; an optional `Q&A.md` captures the original question-and-answer exchanges verbatim. Add a new folder per topic rather than growing one file.
+
 ---
 
 ## Spec structure
