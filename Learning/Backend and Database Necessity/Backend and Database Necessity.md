@@ -2,7 +2,7 @@
 
 ## The question
 
-Northstar's stack was set early as ASP.NET Core + PostgreSQL on the backend and Flutter on the frontend. But settling on *a* backend is not the same as establishing that you *need* one. This explainer works through the actual question: for a single-user personal library like Northstar, what does a backend earn its keep doing, and could an on-device database do the whole job instead?
+Northstar's stack was set early as ASP.NET Core + PostgreSQL on the backend and Flutter on the frontend. But settling on *a* backend is not the same as establishing that you *need* one. This explainer works through the actual question: for a single-user personal library like Northstar, what does a backend do that the client cannot, and could an on-device database do the whole job instead?
 
 The short version: for the core product, a backend is not strictly necessary. It becomes justified the moment you want data to live in more than one place — multi-device sync or durable off-device backup. Everything else people reach for a backend to do either doesn't apply here, or can't live on a server anyway.
 
@@ -10,7 +10,7 @@ The short version: for the core product, a backend is not strictly necessary. It
 
 ## What a backend actually does
 
-A backend earns its place through some combination of five jobs. The useful exercise is to hold each one against the specific app you're building rather than assuming all five apply.
+A backend does some combination of five jobs. Check each one against the specific app you're building rather than assuming all five apply.
 
 1. **Enforce a trust boundary** — stop one user from seeing or tampering with another user's data.
 2. **Hold secrets the client can't** — API client secrets, signing keys, anything that must not ship in a binary.
@@ -18,18 +18,18 @@ A backend earns its place through some combination of five jobs. The useful exer
 4. **Run work that outlives a client session** — background jobs, scheduled polling, work that must happen while the app is closed.
 5. **Do compute the client can't** — heavy queries, ML, aggregation over data too large to sit on a device.
 
-For Northstar, the striking thing is how few of these bite.
+For Northstar, few of these apply.
 
 
 
-## The trust boundary — and why "many users" is a red herring
+## The trust boundary — and why "many users" isn't the point
 
 The instinct that "business logic belongs on the backend for security" comes from *multi-tenant* apps. The word that matters is not *how many people use the app* — it's *whose data shares infrastructure*.
 
 - **Multi-user** — lots of people run the app. Northstar is that, and always will be.
 - **Multi-tenant** — lots of people's data lives in the *same* store, so that store must know which rows belong to whom and refuse to hand user A's rows to user B.
 
-These are independent axes. A million people can each run a fully local app and there is still no tenancy problem, because no two users' data ever touch the same machine. Each install is an island. The trust boundary — the thing server-side authorization exists to enforce — only appears when data from different people lands on **shared infrastructure**.
+These are independent axes. A million people can each run a fully local app and there is still no tenancy problem, because no two users' data ever touch the same machine. Each install is self-contained. The trust boundary — the thing server-side authorization exists to enforce — only appears when data from different people lands on **shared infrastructure**.
 
 This is why a single-user, local-only app has almost no security-driven case for a backend. There is no adversary on the other side of the boundary because there is no shared boundary. Tag resolution, capture thresholds, undo, listening-event aggregation — none of these protect anything by running on a server, because the only person who can touch the data is the person it belongs to, on their own device. A user "cheating" their own capture threshold is a meaningless act.
 
@@ -53,7 +53,7 @@ There is a "login" in Northstar — but it's a login to *Spotify*, not to *North
 
 ## Some logic can't live on a server anyway
 
-This cuts the other way and is worth naming. A chunk of Northstar is structurally device-resident:
+The reverse is also worth stating. Part of Northstar is structurally device-resident:
 
 - `spotify_sdk` wraps the native iOS/Android SDKs and the browser Web Playback SDK.
 - `subscribeToPlayerState()` fires on the device.
@@ -63,9 +63,9 @@ So playback control, threshold evaluation, and Discovery-mode state were never c
 
 
 
-## What genuinely pulls toward a backend
+## What genuinely needs a backend
 
-Only two jobs on the list survive contact with Northstar's reality, and they're really the same job twice — data living in more than one place:
+Only two of the five jobs apply to Northstar, and they are really one job stated twice — data living in more than one place:
 
 - **Multi-device sync.** The platform targets are iOS, Android, *and* desktop. If someone tags a track on their phone and expects it on their desktop, something must reconcile the two copies. A central store is the clean way to do that.
 - **Durable backup.** The product premise — notes as a diary, "your library survives even if a service dies," the Sentimentalist persona — is undermined if a dropped phone erases everything. Off-device backup is arguably a *product* requirement, not a technical nicety.
@@ -76,7 +76,7 @@ Everything else a backend could do here is optional. These two are the real case
 
 ## PostgreSQL vs an on-device database
 
-The Architecture doc's stated Postgres rationale, held line by line against on-device SQLite (via **Drift**, the mature type-safe Flutter ORM) or a Flutter-native store like Isar/ObjectBox:
+The Architecture doc's stated Postgres rationale, compared line by line against on-device SQLite (via **Drift**, the type-safe Flutter ORM) or a Flutter-native store like Isar/ObjectBox:
 
 | Postgres feature cited | On-device reality |
 |---|---|
@@ -85,7 +85,7 @@ The Architecture doc's stated Postgres rationale, held line by line against on-d
 | Array types (`parent_ids`, `album_ids`, `tag_filters`) | SQLite has no array type. You model these as **junction tables** — which is the more normalized, arguably more correct relational design anyway. The one place Postgres is more ergonomic, and it costs a couple of join tables, not a capability. |
 | Full-text search | SQLite **FTS5** is excellent and more than enough for a personal library. |
 
-A personal music library is *thousands* of rows, not millions. There is no query and no data volume here a phone's SQLite can't handle instantly. None of Postgres's advantages are unreachable on-device; the array-type ergonomics are the only real delta, and junction tables are the textbook answer.
+A personal music library is *thousands* of rows, not millions. There is no query and no data volume here a phone's SQLite can't handle instantly. None of Postgres's advantages are unreachable on-device; the array-type convenience is the only real difference, and junction tables are the standard answer.
 
 
 
@@ -107,6 +107,6 @@ The whole decision reduces to one product call:
 > Is real-time multi-device sync a day-one requirement, or is Northstar effectively a one-primary-device app where "my library is safely backed up and I can restore it / occasionally use it elsewhere" is enough for v1?
 
 - **If sync is day-one** — keep a backend, build it sync-first (local-first + server reconciliation), and .NET + Postgres is a sound choice for that service. Go in knowing sync is the genuinely hard part of the whole app.
-- **If sync is a later luxury** — drop the backend from v1 entirely. Ship local-first on Drift. You lose nothing the spec currently promises, gain simplicity and snappiness, and defer the hardest engineering problem until you know you need it. The .NET/Postgres path still slots in cleanly the day sync becomes real.
+- **If sync can wait** — drop the backend from v1 entirely. Ship local-first on Drift. You lose nothing the spec currently promises, gain simplicity and responsiveness, and defer the hardest engineering problem until you know you need it. The .NET/Postgres path can be added when sync becomes real.
 
 The generalisable lesson: don't ask "should this app have a backend?" Ask which of the five jobs the app actually needs done, then let the answers decide. For a single-user, local-first app, the honest answer is often "backup and sync, eventually — and nothing else yet."
