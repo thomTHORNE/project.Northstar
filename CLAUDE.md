@@ -105,6 +105,7 @@ Structure: one folder per topic, named for the concept. Inside, a main explainer
 - **Anything not fully understood is deferred to Ideas.md.** A half-specced feature is worse than no spec.
 - **If writing a spec section requires first resolving an open task, surface the dependency and stop.** Do not write the section with an inline reference to the unresolved item.
 - **No padding.** If a section doesn't have meaningful content, say so briefly and move on (see Notes.md → States as an example).
+- **Banned constructions** are listed in [Writing blacklist.md](Writing%20blacklist.md). Check prose against it before committing, and add any new offender that slips through.
 
 ---
 
