@@ -43,6 +43,23 @@ DAYS.md holds the current year. Earlier years live in `Days/<year>.md`.
 
 ---
 
+::: toggle 2026-07-26
+- `Research/` established as a staging layer between Ideas.md and Spec/ — no authority, but the only place with a path out ([CLAUDE.md](CLAUDE.md))
+- Research topics are split by blocker, not by subject, so parallel work isn't held up ([CLAUDE.md](CLAUDE.md))
+- Findings at the seam between topics are owned by the topic they change ([CLAUDE.md](CLAUDE.md))
+- Promotion bar: a section whose justification depends on an unpromoted topic waits rather than going early with a forward reference ([CLAUDE.md](CLAUDE.md))
+- Topic status vocabulary — Open, Ready, Promoted; a topic enters TASKS.md only at Ready ([CLAUDE.md](CLAUDE.md))
+- Agent parity and Habit Tracking promoted out of Ideas.md into three research topics ([Research/Seed.md](Research/Seed.md))
+- - -
+Agent-native development came in as a question about the frontend and left as something larger. The framework behind it was a non-starter — wrong stack entirely — but the architecture underneath it survived contact: a human and an agent calling the same named operations, with input methods left unshared. Pulling that thread found two things already in the spec that had been built for other reasons and turn out to be the foundation for this one — History's snapshot-and-group undo, and a library with a single source of truth.
+
+The larger outcome is structural. Ideas.md had no way to let an idea grow; it could only park one. Research/ is that missing stage, and the promotion bar is the part that keeps it honest — research that can't be stated as fact in the spec's own voice doesn't get to pretend otherwise. Two ideas moved into it today and split into three topics, on the reasoning that a shared subject is not a shared blocker.
+- - -
+→ Next: stress test #1 in Operation Layer — composition and undo granularity. It is the top-ranked falsifier of the whole initiative and it touches History, which is committed spec, so the answer has consequences beyond research.
+:::
+
+---
+
 ::: toggle 2026-07-25
 - Local-first for v1 — no backend, no Northstar account, no tenancy ([Architecture.md](Spec/Architecture/Architecture.md))
 - Backup & Restore is manual and replaces the library wholesale; automatic sync deferred ([Ideas.md](Ideas.md))

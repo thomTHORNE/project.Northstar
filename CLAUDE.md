@@ -62,6 +62,11 @@ Northstar.git/
 │       │   └── Spotify.md
 │       ├── YouTube.md
 │       └── Google Drive.md
+├── Research/               ← ideas developed in parallel to spec; no authority (see below)
+│   ├── Seed.md             ← the initiative behind the current topics; frozen origin appendix
+│   ├── Operation Layer/
+│   ├── Agent Parity/
+│   └── Habit Tracking/
 ├── Learning/               ← topic explainers; not project spec (see note below)
 ├── History.md              ← legacy, superseded by DAYS.md. Do not read, search, or reference.
 ├── Brainstorm/             ← legacy, outdated. Do not read, search, or reference.
@@ -93,6 +98,32 @@ Northstar.git/
 3. **States** — meaningful states the feature or entity can be in (even if not persisted — include the section and explain if states are runtime-only)
 4. **Constraints** — hard limits, version-scoped limitations
 5. **Edge cases** — a table of scenario → behavior
+
+---
+
+## Research
+
+`Research/` is where an idea that has outgrown `Ideas.md` is developed in parallel to the spec. Each topic is a subdirectory following `<Topic>/<Topic>.md`, plus whatever supporting files it needs.
+
+Research carries no authority. It does not define behavior and nothing in it constrains implementation — it is thinking in progress, not a decision. Where `Learning/` explains concepts and `Ideas.md` parks possibilities, `Research/` is the one place with a path out: a topic developed thoroughly and shown to apply to Northstar is promoted into `Spec/`, and the research document stops being the reference the moment it lands there.
+
+**Topics are split by blocker, not by subject.** Two threads sharing a subject but waiting on different things belong in separate topics, so neither is held up by the other's blocker. Parallel development is the reason the directory exists.
+
+**Findings are owned by the document they change**, not the one they were discovered in. A finding at the seam between two topics belongs to the topic that must change if it holds. Every topic carries a `Dependencies` section naming both directions — what it requires from other topics, and what requires it.
+
+**Topic status**, carried on the first line of the topic document:
+
+| Status | Meaning |
+|---|---|
+| `Open` | Under research |
+| `Ready` | Cleared the promotion bar, held by a dependency. Earns a TASKS.md item carrying the `Deps:` that blocks it |
+| `Promoted` | Landed in spec. The research document is no longer the reference |
+
+Research stays out of TASKS.md while it is still research. A topic enters the tracker only at `Ready`, at which point its promotion is spec work like anything else and the existing DAYS.md vocabulary covers it.
+
+**Promotion bar.** A topic is ready when its open questions are resolved rather than listed, and its conclusions can be stated as decisions in the spec's own voice.
+
+Partial promotion is allowed for sections that stand on their own justification. A section whose reason depends on a topic that has not itself promoted does not go early with a forward reference — it waits, and the topics promote together. A rule in the spec justified by something that does not exist yet cannot be evaluated by the person reading it.
 
 ---
 
@@ -152,7 +183,8 @@ An item may appear in more than one card. Drafted Tuesday, approved Friday — T
 **Writing**
 
 - The spec is written before the day card, always. A decision summary linking to a spec section that does not yet exist is a log standing in for the thing it is supposed to point at.
-- A decision summary links to the spec section that carries it. When that section is blocked and cannot yet be written, it links to the TASKS.md item tracking it instead — never to nothing.
+- A decision summary links to the spec section that carries it. When that section is blocked and cannot yet be written, it links to the TASKS.md item tracking it instead — never to nothing. A decision about repo convention rather than about the product links to the file carrying the convention, usually CLAUDE.md.
+- A card with no item activity omits the item block entirely. Decisions, conclusion, and `→ Next` carry the day on their own.
 - Every card carries a conclusion paragraph above the `→ Next` line: plain prose, what the day amounted to and why it mattered. It is not a restatement of the item list — it is the part that tells you, months later, whether the day was worth anything.
 - A day card may be edited freely during the day it describes. Retroactive editing is prohibited — a card is a snapshot of that day. A session running past midnight stays on the card it started on.
 - Fixing a broken link or a typo is not retroactive editing. Changing what the card says happened is.

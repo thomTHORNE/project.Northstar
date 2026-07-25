@@ -2,6 +2,8 @@
 
 A running list of ideas worth revisiting. Nothing here is committed to the spec — these are possibilities, not decisions.
 
+An idea that outgrows this file is promoted to [Research/](Research/), where it is developed in parallel to the spec. Promoted ideas are removed from here — their frozen originals live in [Research/Seed.md](Research/Seed.md).
+
 ---
 
 ## YouTube track segments
@@ -59,23 +61,6 @@ The right design — whether that means a "ghost" track record, a separate event
 
 ---
 
-## Habit Tracking
-
-A feature that surfaces patterns and insights from the user's listening history. The data foundation for this — the `ListeningEvent` entity — is already being collected in the initial version. Habit Tracking is what gets built on top of it.
-
-The core tension that deferred this feature: a manually defined set of metrics (most played, listening trends, time-of-day patterns) is quick to build but limited in imagination. It answers only the questions you thought to ask upfront. An AI-driven approach could surface connections the user never anticipated — the kind of insight that makes someone say "I didn't know that about myself" — but it's harder to define and depends on having a meaningful volume of listening history first.
-
-The right time to revisit this is once the core app is stable and a body of `ListeningEvent` data exists to work with. At that point the shape of the feature will be much clearer — both what the data actually shows and what questions users are naturally asking about their listening.
-
-Three angles worth exploring when the time comes:
-- **Personal dashboard** — a user-facing view of listening patterns, library growth over time, and tag usage distribution. The data-driven complement to the notes browser — one shows what you've written, the other shows what you've played.
-- **Pattern surfacing** — what the data reveals about listening behavior over time (seasonal patterns, mood-driven habits, library engagement vs. discovery ratio)
-- **AI-driven insights** — using the user's own library — tracks, tags, notes, listening history — as a personal dataset to surface recommendations and connections that reflect individual taste, not a generalized model
-
-The research references saved below are a good starting point for understanding the psychology behind listening behavior before designing this feature.
-
----
-
 ## Notes browser
 
 A dedicated view where the user can read all their notes in one place, across every entity type. Rather than navigating the library by artist or playlist, the user navigates by their own written context and memories — a more personal and reflective entry point into the library.
@@ -114,13 +99,13 @@ The example below uses Capture Mode as a reference point, but instrumentation co
 - Capture skip rate (how often the threshold or duplicate rules prevent a capture)
 - Most common source types captured from
 
-For the user-facing equivalent — a personal dashboard of listening patterns, library growth, and tag usage — see the Habit Tracking idea above.
+For the user-facing equivalent — a personal dashboard of listening patterns, library growth, and tag usage — see [Research/Habit Tracking](Research/Habit%20Tracking/Habit%20Tracking.md).
 
 ---
 
-## Research references
+## Reference papers
 
-A collection of papers and articles saved during the Habit Tracking and ListeningEvent design discussions. Useful for understanding the psychology behind how people actually experience music — relevant to feature decisions around listening thresholds, habit tracking, and the emotional core of Northstar.
+A collection of papers and articles saved during the Habit Tracking and ListeningEvent design discussions. Useful for understanding the psychology behind how people actually experience music — relevant to feature decisions around listening thresholds, habit tracking, and the emotional core of Northstar. Habit Tracking now lives in [Research/](Research/Habit%20Tracking/Habit%20Tracking.md); these stay here until they have a better home.
 
 ---
 
