@@ -26,7 +26,7 @@ See [Data Model — Note](../1.%20Data%20Model.md#note) for the full field and r
 
 - A note is deleted when the user clears the field entirely.
 - No confirmation is required — clearing the field is the deletion action.
-- The deletion is logged in History and can be undone within the grace period.
+- The deletion is logged in History and can be undone within the undo window.
 
 ### Entity deletion
 
@@ -45,7 +45,7 @@ Notes do not have meaningful states. A note exists and is editable, or it does n
 
 - Each entity can have at most one note.
 - Notes are not searchable in the initial version.
-- Notes are private — they are not included in any library sharing or export features in the initial version.
+- Notes are included in Backup & Restore.
 - There is no character limit in the initial version.
 
 ---
@@ -54,6 +54,6 @@ Notes do not have meaningful states. A note exists and is editable, or it does n
 
 | Scenario | Behavior |
 |---|---|
-| User clears a note and immediately wants it back | The deletion is logged in History. The user can undo it within the grace period to restore the note content. |
+| User clears a note and immediately wants it back | The deletion is logged in History. The user can undo it within the undo window to restore the note content. |
 | A note exists on a `pending_review` entity that is discarded | The note is deleted with the entity. It is included in the grouped History entry for that discard action and can be restored via undo. |
 | User navigates away while editing a note | Changes are saved automatically before navigation. No content is lost. |

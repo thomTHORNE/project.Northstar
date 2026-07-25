@@ -26,6 +26,29 @@ Possible configuration surface when the time comes: sync interval, selective opt
 
 ---
 
+## Northstar-owned sync (multi-device)
+
+Real multi-device sync, with Northstar as the authority that reconciles copies — tag a track on your phone, see it on your desktop without moving a file by hand.
+
+Distinct from the Automatic import idea above: that one syncs Northstar with a streaming service. This one syncs Northstar with itself across devices.
+
+The reason this was deferred: sync doesn't arrive alone. A shared store means many users' data on the same infrastructure, which means a Northstar account, authentication, and per-row ownership checks. No backend, no login, no tenancy — the three arrive together. For v1, manual Backup & Restore covers the actual need (durable backup, moving to a new device) at a fraction of the cost.
+
+The hard part is not transport, it's merge. Two devices that each imported the same track hold two rows for one song, each with its own notes and tags. Merging them wrongly is how a note ends up attached to the wrong entity.
+
+What already keeps the door open:
+- Every entity uses a client-generated UUID, so two offline devices can create records without collision.
+- `source_links` is a stable natural key. A Spotify track ID identifies the same song on every device, so imported entities can be deduplicated by source link rather than by UUID.
+- History logs every create, update, and delete with a full `entity_snapshot` — effectively a change feed.
+
+What would still be needed:
+- A durable record of deletions. History serves this only if entries are retained indefinitely; a short retention window closes this path silently.
+- Natural keys for entities with no source link. Tags can merge by name (case sensitivity needs deciding). Playlists have no natural key at all and need a rule.
+
+Worth revisiting once multi-device use is real rather than assumed — and only then, since the decision to build it is also the decision to run a service.
+
+---
+
 ## ListeningEvents for unsaved tracks
 
 During Discovery mode, Northstar currently only records a ListeningEvent when a discovered track already exists in the library. The question deferred here: should ListeningEvents also be recorded for tracks heard but never saved?
@@ -68,6 +91,8 @@ Northstar is private by design, but the things that make it personal — notes, 
 Sharing a playlist could optionally include the notes attached to its tracks. Sharing an artist page could surface what you wrote about them. A friend wouldn't just see what you're listening to — they'd see why it matters to you.
 
 This turns music sharing into something closer to a conversation than a recommendation. Worth thinking about what the privacy model looks like (per-entity opt-in, per-share opt-in, or a public/private toggle at the account level) and how it interacts with the notes browser idea above — a shared notes view could be a compelling social surface on its own.
+
+Whether notes are shareable at all is itself undecided. They are the most personal data in the library, and there is a defensible version of Northstar where notes are never shared regardless of what else is. This needs deciding before any sharing feature is designed, not after.
 
 ---
 

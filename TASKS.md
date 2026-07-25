@@ -5,9 +5,15 @@ Northstar spec writing tracker. Structure: Alignment → Goal → Item.
 ## Status
 
 - `[ ]` **Open** — default state, not yet resolved.
-- `[x]` **Pending review** — spec work drafted and committed, awaiting user review before moving to History.md.
+- `[x]` **Pending review** — spec work drafted and committed, awaiting user review.
 
-Resolved tasks are moved to History.md rather than remaining checked.
+Resolved tasks are removed from TASKS.md and recorded in that day's DAYS.md card with state `CLOSED`.
+
+## Severity
+
+- `BLOCKER` — missing spec that would produce broken or undefined behavior at implementation time.
+- `GAP` — incomplete or inconsistent spec that would cause a developer to make a wrong assumption.
+- `MINOR` — should be addressed but low risk if deferred; implementation can proceed without it.
 
 
 
@@ -24,8 +30,17 @@ All open issues in the data model are blockers — they must be resolved before 
 - [ ] `#1.2` `BLOCKER` **`capture_session_id` has no source entity**
     This UUID appears in History and ListeningEvent but is never generated or stored anywhere in the data model. Decide: add a lightweight Capture Session entity, or define it as a UUID generated when Capture Mode is enabled and stored on the Playlist. The Data Model needs to document the origin.
 <br>
-- [ ] `#1.3` `BLOCKER` **Tag association undo is underspecified**
+- [ ] `#1.3` `BLOCKER` `Deps: #1.5` **Tag association undo is underspecified**
     Undoing a tag deletion must restore all its associations across tracks, artists, albums, and playlists. History's `entity_snapshot` captures the tag's own state, not its association membership. Define how tag associations are recorded in History so the grouped undo can fully reverse a tag deletion.
+<br>
+- [ ] `#1.4` `BLOCKER` **Playlist has no track storage mechanism**
+    Playlist declares "References many Tracks (ordered)" but has no field for them. Manual tracks are referenced throughout Playlists.md, Capture Mode, and the Playlist rules. Define the representation — an ordered `track_ids` array or a junction table with position. Same shape as #1.1; decide both together for consistency.
+<br>
+- [ ] `#1.5` `BLOCKER` **Tag associations have no storage mechanism**
+    Tag and its target entities describe the many-to-many in prose, but no field or junction table encodes it. Define the representation. Affects Tags, Playlists (tag-driven resolution), History (undo), and Backup & Restore (serialization).
+<br>
+- [ ] `#1.6` `GAP` `Deps: #1.5` **Relationships sections are inconsistent**
+    Tag claims it applies to Artists and Albums, but neither lists Tags in its Relationships. Playlist conflates tag filters with tags applied to the playlist itself — these are different relationships and need separating.
 :::
 
 
@@ -42,11 +57,16 @@ All open issues in the data model are blockers — they must be resolved before 
     The spec says tag-matched track order is not user-controllable but never states what the default order is. Define it (e.g. date added to library, alphabetical by title).
 :::
 
-::: toggle `#3` Notes
-[Spec/Features/Notes.md](Spec/Features/Notes.md)
+::: toggle `#11` Backup & Restore
+Spec not started. Manual export and import of the complete local library, replace semantics.
+
+[Spec/Features/Backup & Restore.md](Spec/Features/Backup%20&%20Restore.md)
 - - -
-- [ ] `#3.1` `GAP` **"Grace period" terminology conflict**
-    Notes uses "grace period" for undo window (how long a deletion can be undone). Capture Mode uses the same term for the pending_review auto-action timer. These are different concepts. Notes should reference the History retention window instead.
+- [ ] `#11.1` `BLOCKER` **Export file format**
+    Portable versioned JSON, not a raw database file — decided. Remaining: the payload structure. Envelope carries `format`, `version`, `created_at`, `counts`, and a `checksum` over the serialized payload. Restore refuses an unsupported version rather than guessing.
+<br>
+- [ ] `#11.2` `BLOCKER` `Deps: #11.1, #1.4, #1.5` **Backup & Restore feature spec**
+    Restore replaces the local library entirely, behind a confirmation prompt showing the backup's counts and creation date. Northstar auto-exports the current library before every restore. The new library is built and validated in full before the swap — never wipe-then-load. Three validation passes: structural, referential, count reconciliation. ListeningEvents and History are both in scope. Export is manual only in v1. Merge semantics are deferred — see Ideas.md → Northstar-owned sync.
 :::
 
 
@@ -73,7 +93,7 @@ See [Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md) → I
 - [ ] `#4.5` `GAP` **Disconnect flow**
     No behavior defined for when the user disconnects their Spotify account. Existing source links become unplayable. Define: whether tracks are flagged, what the user sees, and whether re-connecting restores playback without re-import.
 <br>
-- [x] `#4.6` **OAuth initial flow / redirect URI strategy**
+- [x] `#4.6` `GAP` **OAuth initial flow / redirect URI strategy**
     PKCE initial flow is mentioned but not sketched. Redirect URI strategy differs by platform: custom URL scheme on iOS/Android, localhost loopback or app-internal handler on the Flutter web build. Specify what URIs must be registered with Spotify's developer dashboard.
 <br>
 - [ ] `#4.7` `GAP` `Deps: #4.2` **Play call payload shape**
@@ -84,6 +104,9 @@ See [Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md) → I
 <br>
 - [ ] `#4.9` `MINOR` **Track metadata staleness**
     Tracks are frozen at import time. If a track's title or metadata changes on Spotify after import, Northstar's copy is unaffected. This is the correct behavior but should be stated explicitly in the spec.
+<br>
+- [ ] `#4.10` `MINOR` **Free-tier authorization on desktop**
+    The `streaming` scope requires Premium. Spotify's docs do not state whether requesting it fails authorization outright for a free account or grants an unusable scope. Verify empirically at implementation time. If it fails, desktop needs incremental authorization — import scopes at connect, `streaming` requested when playback is first attempted. Architecture.md's "import does not require Premium" is contingent on this. Also reword Authentication.md's single-authorization line to make the platform-conditional scope set explicit.
 :::
 
 ::: toggle `#5` YouTube
@@ -119,9 +142,8 @@ Deferred decisions to be resolved in Phase 4.
 
 [Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md)
 - - -
-- [ ] `#8.1` `GAP` **Tech stack decision**
-<br>
-- [ ] `#8.2` `BLOCKER` **Data storage and persistence**
+- [ ] `#8.2` `BLOCKER` **On-device database engine and data access layer**
+    The storage model is decided — local-first, on-device database as source of truth. The engine is not. Drift/SQLite, Isar, and ObjectBox are candidates. Affects how array-typed fields are modelled.
 <br>
 - [ ] `#8.3` `BLOCKER` **Cross-source queue handoff (pre-initialisation)**
     The next source's player must be initialised and ready before the current source session closes. This is a sequencing and preload problem — the architecture must account for pre-initialising the next source player before the current track ends.
@@ -130,8 +152,15 @@ Deferred decisions to be resolved in Phase 4.
     Tune polling cadence to balance responsiveness against rate limit exposure. ~3–5s while active, backed off in the background.
 <br>
 - [ ] `#8.5` `GAP` **History retention window (undo eligibility)**
+    History exists for reversibility, not archiving — undo eligibility and retention are one window, not two. The value is still open. A bounded window closes the path to using History as a deletion record for future sync.
 <br>
 - [ ] `#8.6` `BLOCKER` **ListeningEvent storage and query design**
+<br>
+- [ ] `#8.7` `GAP` `Deps: #8.2` **Array types vs junction tables**
+    The Data Model declares `album_ids` UUID[], `parent_ids` UUID[], and `source_links` Link[]. SQLite has no array type. Decide whether the Data Model stays logical with Architecture recording the physical mapping, or whether the model itself changes. Also determines how tag associations are represented in the Backup & Restore payload.
+<br>
+- [ ] `#8.8` `GAP` **Durability of browser-origin storage on the desktop build**
+    The desktop target is Flutter web, so the library would live in browser-origin storage, which is evictable. Verify current Storage API persistence guarantees before speccing.
 :::
 
 
@@ -165,50 +194,6 @@ Where and how Discovery mode is surfaced in the UI.
 <br>
 - [ ] `#10.2` `GAP` **Discovery mode — trigger visibility (only surfaced when a supported source is active)**
 :::
-
-
-
-## Spec review — open issues
-
-**Severity key:**
-- **Blocker** — missing spec that would produce broken or undefined behavior at implementation time
-- **Gap** — incomplete or inconsistent spec that would cause a developer to make a wrong assumption
-- **Minor** — should be addressed but low risk if deferred; implementation can proceed without it
-
-| ID | Severity | Status | Issue | Deps |
-|---|---|---|---|---|
-| 1.1 | Blocker | [ ] | Album track order has no storage mechanism — no field or join table can encode position within a specific album | — |
-| 1.2 | Blocker | [ ] | `capture_session_id` has no source entity — UUID used in History and ListeningEvent but never defined or generated anywhere | — |
-| 1.3 | Blocker | [ ] | Tag association undo underspecified — entity_snapshot can't reconstruct many-to-many associations on undo | — |
-| 4.2 | Blocker | [ ] | Initial playback device activation flow undocumented — desktop requires SDK init, device ID, and device transfer before any audio starts | — |
-| 4.3 | Blocker | [ ] | Rate limit / 429 handling not defined — no retry or backoff strategy for Spotify API calls | — |
-| 7.1 | Blocker | [ ] | REST API surface not specified | — |
-| 7.2 | Blocker | [ ] | Playback API not specified (Library mode + Discovery mode) | #4.2, #4.7 |
-| 8.2 | Blocker | [ ] | Data storage and persistence not decided | — |
-| 8.3 | Blocker | [ ] | Cross-source queue handoff (pre-initialisation) not designed | — |
-| 8.6 | Blocker | [ ] | ListeningEvent storage and query design not specified | — |
-| 2.1 | Gap | [ ] | Playlist filter OR logic stated in Tags spec but not Playlists spec | — |
-| 2.2 | Gap | [ ] | Tag-matched track ordering in playlists unspecified — spec says not user-controllable but never states the default | — |
-| 3.1 | Gap | [ ] | "Grace period" used for two different concepts — Capture Mode (pending_review timer) vs. Notes (undo window) | — |
-| 4.5 | Gap | [ ] | Disconnect flow undefined — no behavior specified when the user disconnects their Spotify account | — |
-| 4.6 | Gap | [x] | OAuth initial flow / redirect URI strategy — PKCE + App Remote SDK flows and redirect URIs specified | — |
-| 4.7 | Gap | [ ] | Play call payload shape unspecified — Library-mode and Discovery-mode use different `PUT /v1/me/player/play` payload shapes | #4.2 |
-| 4.8 | Gap | [ ] | Image URL TTL undefined — Spotify image URLs may expire; caching/proxying strategy not decided | — |
-| 7.3 | Gap | [ ] | Polling design for Discovery mode not specified | — |
-| 8.1 | Gap | [ ] | Tech stack decision not documented in Architecture spec | — |
-| 8.4 | Gap | [ ] | Discovery mode polling cadence / rate limits / background behaviour not tuned | — |
-| 8.5 | Gap | [ ] | History retention window (undo eligibility) not specified | — |
-| 9.1 | Gap | [ ] | First run / onboarding flow not documented | — |
-| 9.2 | Gap | [ ] | Importing music flow not documented (service import + link import) | — |
-| 9.3 | Gap | [ ] | Building a playlist flow not documented (manual + tag-driven) | — |
-| 9.4 | Gap | [ ] | Capture session end-to-end flow not documented | — |
-| 9.5 | Gap | [ ] | Reviewing pending (captured) items flow not documented | — |
-| 9.6 | Gap | [ ] | Discovery mode session flow not documented | — |
-| 10.1 | Gap | [ ] | Discovery mode trigger placement undecided (context menu, player controls, or both) | — |
-| 10.2 | Gap | [ ] | Discovery mode trigger visibility rules undecided | — |
-| 4.1 | Minor | [ ] | App Remote SDK scope requirements need verification at implementation time | — |
-| 4.4 | Minor | [ ] | Mobile constraint says "installed" but App Remote SDK requires Spotify app running; verify behaviour at implementation | — |
-| 4.9 | Minor | [ ] | Track metadata staleness — correct behavior (tracks frozen at import) not stated explicitly in spec | — |
 
 
 

@@ -41,7 +41,7 @@ When writing or explaining code, take a student-professor approach. Don't just p
 Northstar.git/
 ├── CLAUDE.md               ← this file
 ├── TASKS.md                ← phase-by-phase task tracker with inline reasoning notes
-├── History.md              ← completed tasks, archived from TASKS.md. Do not read or search — if historical context is needed, the user will provide it manually.
+├── DAYS.md                 ← work log, one card per working day, newest first
 ├── Ideas.md                ← deferred ideas, not committed to spec
 ├── Northstar in simple terms.md   ← anchor document, user-facing
 ├── PostmanApiTesting.md    ← Spotify API testing notes
@@ -63,11 +63,12 @@ Northstar.git/
 │       ├── YouTube.md
 │       └── Google Drive.md
 ├── Learning/               ← topic explainers; not project spec (see note below)
-├── Brainstorm/             ← legacy, outdated. Do not reference.
-└── Functional Specification/  ← legacy, outdated. Do not reference.
+├── History.md              ← legacy, superseded by DAYS.md. Do not read, search, or reference.
+├── Brainstorm/             ← legacy, outdated. Do not read, search, or reference.
+└── Functional Specification/  ← legacy, outdated. Do not read, search, or reference.
 ```
 
-**Active work lives in `Spec/`.** The `Brainstorm/` and `Functional Specification/` folders are from before the current spec effort and will eventually be deleted.
+**Active work lives in `Spec/`.** `History.md`, `Brainstorm/`, and `Functional Specification/` are from before the current effort and will eventually be deleted. Do not read or search them — if historical context is needed, the user will provide it manually.
 
 **Learning directory:** `Learning/` contains topic-based explainers that branch off from project work into broader concepts. Files are written with Northstar as the running example but cover general technical ground (auth flows, database patterns, Flutter idioms, etc.). They are not spec, do not define behavior or decisions, and carry no authority over implementation. Read them when the user references a prior explanation or asks to revisit a concept.
 
@@ -106,31 +107,11 @@ Northstar.git/
 
 ---
 
-## Key decisions — do not revisit without good reason
-
-| Decision | Detail |
-|---|---|
-| No `mode` field on Playlist | Mode is inferred from contents: manual tracks only = manual, tag_filters only = tag-driven, both = mixed |
-| `source_links` not `service_links` | Source-agnostic from the start — Spotify, YouTube, and cloud storage are all valid sources |
-| Capture Mode: immediate persistence + `pending_review` | No staging buffer. New entities go straight to the library flagged for review. Existing entities are reused without flagging. |
-| ListeningEvent threshold: percentage-based | 40% of track duration (user-configurable). Not a flat time value. |
-| Capture Mode threshold: absolute time | 30 seconds elapsed (user-configurable). Not percentage-based — the question is "was this more than a skip?", which is not proportional to track length. |
-| History: global feed, not per-entity | Undo is grouped for bulk operations. `capture_session_id` links all entities created in a single capture session. |
-| Tag hierarchy: two-level max | `parent_ids` UUID[] — many-to-many. A tag with children cannot itself have a parent. |
-| Notes: auto-save, delete by clearing | No explicit save action. No confirmation on delete. Undo available within grace period. |
-| Import: no generated tag filters | Tag filters are always user-defined. Import never creates them. |
-| Discovery mode: polling for track detection, events for progress | Spotify does not push playback events. Northstar polls `GET /v1/me/player/currently-playing` every ~3–5s during Discovery mode to detect track changes. Progress tracking (ListeningEvent and Capture Mode thresholds) uses `subscribeToPlayerState()` — polling is too coarse for threshold evaluation. |
-| Discovery mode: Spotify Premium required | Hard constraint. Free-tier users cannot use Discovery mode. Surface a clear explanation, not a generic error. |
-| Tech stack | ASP.NET Core + PostgreSQL + EF Core (backend), Flutter/Dart (frontend). See [Spec/Architecture/Architecture.md](Spec/Architecture/Architecture.md). |
-| `Link` type: `{ source, id }` | Source links store source-native IDs only — no URLs. Each integration is responsible for constructing URIs/URLs from IDs and extracting IDs from URLs at its own layer. |
-
----
-
 ## Spec & docs workflow
 
 - Never write to files without explicit approval of a specific draft. "Sure" or "ok" in response to "want me to write it?" means show a draft first — not write to files.
-- TASKS.md uses an Alignment → Goal → Item hierarchy. Goals carry `#N` IDs. Items carry `#N.N` decimal IDs scoped to their goal. Severity (`BLOCKER` / `GAP` / `MINOR`) appears both on the item line and in the spec review table.
-- TASKS.md item format: first line carries the checkbox, ID, tags, and bold title; the description goes on the next line indented by 4 spaces. Tag order: severity, then `Deps: #X.X` if any. Items without a description are single-line. `<br>` separates consecutive items in a goal. Status: `[ ]` Open (default), `[x]` Pending review (drafted, awaiting review before moving to History.md).
+- TASKS.md uses an Alignment → Goal → Item hierarchy. Goals carry `#N` IDs. Items carry `#N.N` decimal IDs scoped to their goal. Severity (`BLOCKER` / `GAP` / `MINOR`) is carried on the item line only. TASKS.md holds no second index of items — the Alignment → Goal → Item hierarchy is the whole file.
+- TASKS.md item format: first line carries the checkbox, ID, tags, and bold title; the description goes on the next line indented by 4 spaces. Tag order: severity, then `Deps: #X.X` if any. Items without a description are single-line. `<br>` separates consecutive items in a goal. Status: `[ ]` Open (default), `[x]` Pending review (drafted, awaiting review).
 
   Example:
   ```
@@ -139,7 +120,43 @@ Northstar.git/
   ```
 - Before drafting any spec section, check the item's `Deps:` field in TASKS.md. Surface all listed dependencies and propose batching them into the current work. Do not use an inline `[#N.N]` reference as a substitute for resolving a dependency.
 - Every decision made in conversation must be written into the spec before the task is considered done. Marking a task complete or moving on without writing the decision into the relevant spec file is not acceptable — the goal is to build the spec, not tick off tasks.
-- When a task is resolved, immediately move it from TASKS.md to History.md. Do not leave completed items in TASKS.md.
+- When an item is resolved, remove it from TASKS.md entirely and record it in that day's DAYS.md card with action `CLOSED`. Do not leave completed items in TASKS.md.
+- Decisions recorded in the spec are settled. Reopen one when something new is known — not because it feels uncertain again. DAYS.md summarizes decisions as they were made; those summaries point to the spec, they never replace it.
+
+---
+
+## DAYS.md — work log
+
+DAYS.md is the work log, replacing History.md. One card per working day, newest first. See DAYS.md for the card format.
+
+**Relationship to TASKS.md.** TASKS.md is present tense — work that isn't finished. It shrinks as work completes. DAYS.md is past tense plus one line of future — what happened, and what comes next. It grows without bound. The two never hold the same thing: an item is in TASKS.md, or it is closed in a day card, never both. Decisions appear in neither as authority — they are written into the spec, and DAYS.md carries a one-line summary with a link.
+
+A day card records the **action** taken on an item that day, not its standing state. An item appears only if something happened to it.
+
+| DAYS.md action | Resulting TASKS.md state | Meaning |
+|---|---|---|
+| `OPENED` | `[ ]` | Item created that day |
+| `REVISED` | `[ ]` | Scope or description changed |
+| `PENDING REVIEW` | `[x]` | Spec drafted and committed, awaiting review |
+| `CLOSED` | *(removed)* | Reviewed and approved. The day card is now the only record it existed |
+
+Goals are recorded the same way, without a decimal — `` `OPENED` `#11` **Backup & Restore** ``.
+
+An item may appear in more than one card. Drafted Tuesday, approved Friday — Tuesday's card shows `PENDING REVIEW`, Friday's shows `CLOSED`. Each card is honest about its own day.
+
+**Reading**
+
+- At session start, read only the most recent day card — never the whole file. DAYS.md is optimized for a human scanning it and grows without bound.
+- Do not full-text search DAYS.md for general context. For a targeted lookup, grep for the item ID (`#N.N`) or a spec path — both are stable anchors.
+
+**Writing**
+
+- The spec is written before the day card, always. A decision summary linking to a spec section that does not yet exist is a log standing in for the thing it is supposed to point at.
+- A decision summary links to the spec section that carries it. When that section is blocked and cannot yet be written, it links to the TASKS.md item tracking it instead — never to nothing.
+- Every card carries a conclusion paragraph above the `→ Next` line: plain prose, what the day amounted to and why it mattered. It is not a restatement of the item list — it is the part that tells you, months later, whether the day was worth anything.
+- A day card may be edited freely during the day it describes. Retroactive editing is prohibited — a card is a snapshot of that day. A session running past midnight stays on the card it started on.
+- Fixing a broken link or a typo is not retroactive editing. Changing what the card says happened is.
+- DAYS.md holds the current year. On the first card of a new year, move the previous year's cards to `Days/<year>.md`. Archived files are not read or searched unless the user points at one.
 
 ---
 
