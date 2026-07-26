@@ -1,49 +1,29 @@
 # Days
 
-A work log, one card per working day, newest first. Its job is to make coming back after time away cheap: read the top card and you know what was decided, what moved, and what comes next.
+A work log, grouped by day, newest first. Each day holds one or more session cards, numbered from 1 within that day.
 
-Cards are never edited after the day they describe. A card records what happened that day, not what is true now.
-
-## Card format
-
-```
-::: toggle YYYY-MM-DD
-- Decision summary, carrying a link to the spec entry where it actually lives
-- - -
-- `ACTION` `#N.N` `SEVERITY` **Item title**
-- - -
-Conclusion — what the day amounted to
-- - -
-→ Next: what the next session picks up, and why
-:::
-```
-
-**Decisions** — succinct summaries written for a human returning cold. They are not authority. The spec is authority; these point at it.
-
-**Items** — title only, no description. `ACTION` records what happened to the item that day:
-
-| Action | Meaning |
-|---|---|
-| `OPENED` | Item created |
-| `REVISED` | Scope or description changed |
-| `PENDING REVIEW` | Spec drafted and committed, awaiting review |
-| `CLOSED` | Reviewed and approved, removed from TASKS.md |
-
-Severity and other tags carry over from TASKS.md unchanged. Goals use the same line without a decimal — `` `OPENED` `#11` **Backup & Restore** ``.
-
-An item appears only if something happened to it. Work that moved nothing belongs in the `→ Next` line.
-
-**Conclusion** — a short paragraph in plain prose: what the day amounted to and why it mattered. Not a restatement of the items above. Written for you returning cold, when the item list alone won't tell you whether the day was worth anything.
-
-**→ Next** — the intent for the following session. May name items left open or pending review, and may carry context that appears nowhere else in the card.
-
-A card may be edited freely during the day it describes. Retroactive editing is prohibited. Fixing a broken link or a typo is not retroactive editing; changing what the card says happened is.
-
-DAYS.md holds the current year. Earlier years live in `Days/<year>.md`.
+Format and conventions: [CLAUDE.md](CLAUDE.md).
 
 ---
 
-::: toggle 2026-07-26
+## 2026-07-26
+
+::: toggle Session 2 — DAYS.md session cards
+- Days become `## YYYY-MM-DD` sections holding session cards; sessions numbered from 1 within their day ([CLAUDE.md](CLAUDE.md))
+- A session is a stretch of work, not a chat — one may span several chats ([CLAUDE.md](CLAUDE.md))
+- `→ Next` is the close marker; sessions close deliberately, Claude proposes and never decides ([CLAUDE.md](CLAUDE.md))
+- Cold start reads the last two day sections in full ([CLAUDE.md](CLAUDE.md))
+- No day-level conclusion — the sessions are the record ([CLAUDE.md](CLAUDE.md))
+- DAYS.md's format rules moved into CLAUDE.md, matching how TASKS.md already works ([CLAUDE.md](CLAUDE.md))
+- - -
+Two large sessions landing on one day broke the card format, but the fix turned out to be less about bloat than about the freeze rule. A day can't be frozen while it's still running, so a second session either overwrote the first session's account or piled onto it — and the retroactive-editing rule existed precisely to prevent the first. A session has an observable close, which is what made the rule enforceable rather than aspirational.
+
+The second outcome was unplanned. Moving the format rules out left DAYS.md as nothing but entries, which is what it is for: its job is re-entry after time away, and forty lines of format spec sat between the top of the file and the most recent card. TASKS.md already kept its rules in CLAUDE.md; DAYS.md was the exception, and now isn't.
+- - -
+→ Next: two threads, both carried unconsumed. Resolve `#1.1`, `#1.4`, and `#1.5` in one sitting — all three are the same question, how the Data Model stores collection membership; answering it clears four of the five Data Model blockers and unblocks `#1.3`, `#1.6`, and `#11.2`. Then stress test #1 in Operation Layer — composition and undo granularity, the top-ranked falsifier of the whole research initiative, touching History, which is committed spec.
+:::
+
+::: toggle Session 1 — Research staging layer
 - `Research/` established as a staging layer between Ideas.md and Spec/ — no authority, but the only place with a path out ([CLAUDE.md](CLAUDE.md))
 - Research topics are split by blocker, not by subject, so parallel work isn't held up ([CLAUDE.md](CLAUDE.md))
 - Findings at the seam between topics are owned by the topic they change ([CLAUDE.md](CLAUDE.md))
@@ -60,7 +40,9 @@ The larger outcome is structural. Ideas.md had no way to let an idea grow; it co
 
 ---
 
-::: toggle 2026-07-25
+## 2026-07-25
+
+::: toggle Session 1 — Local-first architecture
 - Local-first for v1 — no backend, no Northstar account, no tenancy ([Architecture.md](Spec/Architecture/Architecture.md))
 - Backup & Restore is manual and replaces the library wholesale; automatic sync deferred ([Ideas.md](Ideas.md))
 - Backup format is portable versioned JSON, not a raw database file (`#11.1`)
