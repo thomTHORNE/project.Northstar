@@ -8,6 +8,39 @@ Format and conventions: [CLAUDE.md](CLAUDE.md).
 
 ## 2026-07-26
 
+::: toggle Session 3 — Collection membership, and Backup & Restore
+- Every many-to-many is an association — a record with its own UUID, not a field on either side ([Data Model](Spec/1.%20Data%20Model.md))
+- Every relationship names the field or association that carries it, or it does not exist ([Data Model](Spec/1.%20Data%20Model.md))
+- History logs associations as well as entities ([Data Model](Spec/1.%20Data%20Model.md))
+- Backup & Restore is portable versioned JSON, flat collections mirroring the model ([Backup & Restore](Spec/Features/Backup%20&%20Restore.md))
+- Restore is non-destructive: a safety backup first, then the new library is built and validated in full before the swap — never wipe-then-load ([Backup & Restore](Spec/Features/Backup%20&%20Restore.md))
+- Backups are not encrypted in v1; only the most recent safety backup is kept ([Backup & Restore](Spec/Features/Backup%20&%20Restore.md))
+- - -
+- `CLOSED` `#1.1` `BLOCKER` **Album track order has no storage mechanism**
+<br>
+- `CLOSED` `#1.4` `BLOCKER` **Playlist has no track storage mechanism**
+<br>
+- `CLOSED` `#1.5` `BLOCKER` **Tag associations have no storage mechanism**
+<br>
+- `CLOSED` `#1.6` `GAP` **Relationships sections are inconsistent**
+<br>
+- `CLOSED` `#11.1` `BLOCKER` **Export file format**
+<br>
+- `CLOSED` `#11.2` `BLOCKER` **Backup & Restore feature spec**
+<br>
+- `REVISED` `#1.2` `BLOCKER` **`capture_session_id` has no source entity**
+<br>
+- `REVISED` `#1.3` `BLOCKER` **Association undo granularity is underspecified**
+<br>
+- `REVISED` `#8.7` `GAP` **`source_links` storage representation**
+- - -
+Three blockers that read as three problems were one question — how the model stores collection membership — and answering it uniformly closed a fourth and unblocked a whole feature. The fix generalised past the items: every relationship now names the field or association carrying it, which makes a relationship declared with nothing behind it structurally impossible rather than merely absent. That is exactly what had gone wrong, in five places.
+
+Backup & Restore was never blocked on itself. It was blocked on being unable to serialise fields that did not exist, so defining the associations released it in the same stroke and it was written the same session. Two things were caught only by checking rather than by reasoning: `#8.7` was retired on the assumption that junctions answered every array-typed field, which `source_links` disproves, and the new Associations preamble claimed History could log associations when the enum could not name one.
+- - -
+→ Next: resolve `#1.2`, the last Data Model blocker not held on research. `capture_session_id` still has no source entity, and the junction work opened a second option — a `PlaylistTrack` record could carry it as provenance, alongside whatever holds the active session's ID while a session runs.
+:::
+
 ::: toggle Session 2 — DAYS.md session cards
 - Days become `## YYYY-MM-DD` sections holding session cards; sessions numbered from 1 within their day ([CLAUDE.md](CLAUDE.md))
 - A session is a stretch of work, not a chat — one may span several chats ([CLAUDE.md](CLAUDE.md))

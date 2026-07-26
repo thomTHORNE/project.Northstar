@@ -24,23 +24,11 @@ All open issues in the data model are blockers — they must be resolved before 
 
 [Spec/1. Data Model.md](Spec/1.%20Data%20Model.md)
 - - -
-- [ ] `#1.1` `BLOCKER` **Album track order has no storage mechanism**
-    The model says albums have ordered tracks but no field or join table can encode a track's position within a specific album. Either add a `track_ids` ordered array on Album or define a junction table (Album ↔ Track) with a `position` field. Affects Player (album tracklist) and Import (preserving Spotify album ordering).
-<br>
 - [ ] `#1.2` `BLOCKER` **`capture_session_id` has no source entity**
-    This UUID appears in History and ListeningEvent but is never generated or stored anywhere in the data model. Decide: add a lightweight Capture Session entity, or define it as a UUID generated when Capture Mode is enabled and stored on the Playlist. The Data Model needs to document the origin.
+    This UUID appears in History and ListeningEvent but is never generated or stored anywhere in the data model. Decide: add a lightweight Capture Session entity, or define it as a UUID generated when Capture Mode is enabled and stored on the Playlist. The Data Model needs to document the origin. Note: a `PlaylistTrack` record could additionally carry it to record which session added a track — that is provenance, and complementary to this question rather than an answer to it. Nothing in Capture Mode currently requires it.
 <br>
-- [ ] `#1.3` `BLOCKER` `Deps: #1.5` **Tag association undo is underspecified**
-    Undoing a tag deletion must restore all its associations across tracks, artists, albums, and playlists. History's `entity_snapshot` captures the tag's own state, not its association membership. Define how tag associations are recorded in History so the grouped undo can fully reverse a tag deletion.
-<br>
-- [ ] `#1.4` `BLOCKER` **Playlist has no track storage mechanism**
-    Playlist declares "References many Tracks (ordered)" but has no field for them. Manual tracks are referenced throughout Playlists.md, Capture Mode, and the Playlist rules. Define the representation — an ordered `track_ids` array or a junction table with position. Same shape as #1.1; decide both together for consistency.
-<br>
-- [ ] `#1.5` `BLOCKER` **Tag associations have no storage mechanism**
-    Tag and its target entities describe the many-to-many in prose, but no field or junction table encodes it. Define the representation. Affects Tags, Playlists (tag-driven resolution), History (undo), and Backup & Restore (serialization).
-<br>
-- [ ] `#1.6` `GAP` `Deps: #1.5` **Relationships sections are inconsistent**
-    Tag claims it applies to Artists and Albums, but neither lists Tags in its Relationships. Playlist conflates tag filters with tags applied to the playlist itself — these are different relationships and need separating.
+- [ ] `#1.3` `BLOCKER` **Association undo granularity is underspecified**
+    Associations are records History can name and reverse, and the Tag deletion cascade already commits to restoring them as one grouped operation. What remains is granularity: how association changes compose into a single undoable operation, and where the boundary of one operation sits. This is the subject of `Research/Operation Layer`, which is stress-testing exactly this against History. Held deliberately until that research resolves — do not answer it from momentum.
 :::
 
 
@@ -58,15 +46,9 @@ All open issues in the data model are blockers — they must be resolved before 
 :::
 
 ::: toggle `#11` Backup & Restore
-Spec not started. Manual export and import of the complete local library, replace semantics.
-
 [Spec/Features/Backup & Restore.md](Spec/Features/Backup%20&%20Restore.md)
 - - -
-- [ ] `#11.1` `BLOCKER` **Export file format**
-    Portable versioned JSON, not a raw database file — decided. Remaining: the payload structure. Envelope carries `format`, `version`, `created_at`, `counts`, and a `checksum` over the serialized payload. Restore refuses an unsupported version rather than guessing.
-<br>
-- [ ] `#11.2` `BLOCKER` `Deps: #11.1, #1.4, #1.5` **Backup & Restore feature spec**
-    Restore replaces the local library entirely, behind a confirmation prompt showing the backup's counts and creation date. Northstar auto-exports the current library before every restore. The new library is built and validated in full before the swap — never wipe-then-load. Three validation passes: structural, referential, count reconciliation. ListeningEvents and History are both in scope. Export is manual only in v1. Merge semantics are deferred — see Ideas.md → Northstar-owned sync.
+No open items.
 :::
 
 
@@ -156,8 +138,8 @@ Deferred decisions to be resolved in Phase 4.
 <br>
 - [ ] `#8.6` `BLOCKER` **ListeningEvent storage and query design**
 <br>
-- [ ] `#8.7` `GAP` `Deps: #8.2` **Array types vs junction tables**
-    The Data Model declares `album_ids` UUID[], `parent_ids` UUID[], and `source_links` Link[]. SQLite has no array type. Decide whether the Data Model stays logical with Architecture recording the physical mapping, or whether the model itself changes. Also determines how tag associations are represented in the Backup & Restore payload.
+- [ ] `#8.7` `GAP` `Deps: #8.2` **`source_links` storage representation**
+    `source_links` remains `Link[]` on Track, Artist, and Album. Unlike the relationships now carried by associations, this is a list of value objects with no entity on the far side, so the junction convention does not apply to it. SQLite has no array type: store as a JSON column, or as a child table. Decide once the storage engine is chosen.
 <br>
 - [ ] `#8.8` `GAP` **Durability of browser-origin storage on the desktop build**
     The desktop target is Flutter web, so the library would live in browser-origin storage, which is evictable. Verify current Storage API persistence guarantees before speccing.

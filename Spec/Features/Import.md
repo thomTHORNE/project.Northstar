@@ -28,7 +28,7 @@ The imported data is a starting point. The user owns it from the moment it lands
 - All imported entities are created with `pending_review: false`. Service import is a deliberate user action — nothing is flagged for review.
 - Relationships between entities are preserved: albums reference their artist, tracks reference their artist and album.
 - Playlists are imported as manual playlists. Tag filters are not inferred or generated — those are always user-defined.
-- If a track appears in multiple albums (e.g., a studio album and a greatest hits compilation), both albums are imported and the track references both via `album_ids`.
+- If a track appears in multiple albums (e.g., a studio album and a greatest hits compilation), both albums are imported and the track has an AlbumTrack record in each, with its own position in each.
 
 **Duplicate handling:**
 

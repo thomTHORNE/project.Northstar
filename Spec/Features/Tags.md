@@ -44,7 +44,7 @@ See [Data Model — Tag](../1.%20Data%20Model.md#tag) for the full field and rel
 
 Tags can be organised into groups using a two-level hierarchy. A group is itself a tag — it can be applied to entities and used as a playlist filter just like any other tag.
 
-- A tag can belong to one or more groups by assigning parent tags via `parent_ids`.
+- A tag can belong to one or more groups. Each membership is a TagHierarchy record.
 - A tag with no parents is a top-level tag.
 - Groups can be created and managed the same way as regular tags.
 - Circular references are not allowed — a tag cannot be set as its own ancestor.
@@ -75,7 +75,7 @@ Tags do not have meaningful states beyond their existence. A tag exists in the l
 | User creates a tag with a name that already exists (different casing) | The existing tag is returned. No duplicate is created. |
 | A tag used as a playlist filter is deleted | The tag is removed from all filters. Affected playlists immediately lose any tracks matched solely by that tag. The user is warned of this during the deletion confirmation. |
 | A tag is removed from a track that appears in a tag-driven playlist via that tag | The track is immediately removed from the playlist. |
-| A tag group is deleted | The group tag is deleted and removed from all child tags' `parent_ids`. Child tags are not deleted — they become top-level tags. |
+| A tag group is deleted | The group tag is deleted along with its TagHierarchy records. Child tags are not deleted — they become top-level tags. |
 | A tag with children is assigned a parent | Not allowed. A tag that has child tags cannot itself be nested under a parent. The action is rejected with an explanation. |
 | A tag is applied to a `pending_review` entity | The tag is applied normally. If the entity is later discarded, the tag association is removed with it. The tag itself is not affected. |
 | The same tag is applied to an entity more than once | Idempotent — the second application has no effect. No duplicate association is created. |
