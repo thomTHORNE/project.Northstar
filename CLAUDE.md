@@ -41,7 +41,8 @@ When writing or explaining code, take a student-professor approach. Don't just p
 Northstar.git/
 ├── CLAUDE.md               ← this file
 ├── TASKS.md                ← phase-by-phase task tracker with inline reasoning notes
-├── DAYS.md                 ← work log, day sections with session cards, newest first
+├── DAYS.md                 ← deprecated work log. Not written to; superseded by /sitrep.
+├── .claude/skills/         ← project skills. /sitrep prints a conversation checkpoint.
 ├── Ideas.md                ← deferred ideas, not committed to spec
 ├── Northstar in simple terms.md   ← anchor document, user-facing
 ├── PostmanApiTesting.md    ← Spotify API testing notes
@@ -68,7 +69,7 @@ Northstar.git/
 │   ├── Agent Parity/
 │   └── Habit Tracking/
 ├── Learning/               ← topic explainers; not project spec (see note below)
-├── History.md              ← legacy, superseded by DAYS.md. Do not read, search, or reference.
+├── History.md              ← legacy, outdated. Do not read, search, or reference.
 ├── Brainstorm/             ← legacy, outdated. Do not read, search, or reference.
 └── Functional Specification/  ← legacy, outdated. Do not read, search, or reference.
 ```
@@ -119,7 +120,7 @@ Research carries no authority. It does not define behavior and nothing in it con
 | `Ready` | Cleared the promotion bar, held by a dependency. Earns a TASKS.md item carrying the `Deps:` that blocks it |
 | `Promoted` | Landed in spec. The research document is no longer the reference |
 
-Research stays out of TASKS.md while it is still research. A topic enters the tracker only at `Ready`, at which point its promotion is spec work like anything else and the existing DAYS.md vocabulary covers it.
+Research stays out of TASKS.md while it is still research. A topic enters the tracker only at `Ready`, at which point its promotion is spec work like anything else.
 
 **Promotion bar.** A topic is ready when its open questions are resolved rather than listed, and its conclusions can be stated as decisions in the spec's own voice.
 
@@ -150,75 +151,17 @@ Partial promotion is allowed for sections that stand on their own justification.
   ```
 - Before drafting any spec section, check the item's `Deps:` field in TASKS.md. Surface all listed dependencies and propose batching them into the current work. Do not use an inline `[#N.N]` reference as a substitute for resolving a dependency.
 - Every decision made in conversation must be written into the spec before the task is considered done. Marking a task complete or moving on without writing the decision into the relevant spec file is not acceptable — the goal is to build the spec, not tick off tasks.
-- When an item is resolved, remove it from TASKS.md entirely and record it in the current DAYS.md session card with action `CLOSED`. Do not leave completed items in TASKS.md.
-- Decisions recorded in the spec are settled. Reopen one when something new is known — not because it feels uncertain again. DAYS.md summarizes decisions as they were made; those summaries point to the spec, they never replace it.
+- When an item is resolved, remove it from TASKS.md entirely. Do not leave completed items in TASKS.md.
+- Decisions recorded in the spec are settled. Reopen one when something new is known — not because it feels uncertain again.
+- Diagrams are derived, never authoritative. Where a diagram and the prose it illustrates disagree, the prose wins and the diagram is the defect. A change to any field, relationship, or cascade a diagram depicts is not complete until that diagram is updated in the same edit. A spec whose picture disagrees with its text is worse than one with no picture, because the picture is what gets read.
 
 ---
 
-## DAYS.md — work log
+## Session continuity
 
-DAYS.md is the work log, replacing History.md. Days are `## YYYY-MM-DD` sections, newest first, separated by `---`; each holds one or more session cards. Its job is to make coming back after time away cheap: read the last two days and the train of thought is back.
-
-A session is a stretch of work, not a chat — one session may span several chats, and a day may hold any number of them. Sessions are numbered from 1 within their day and the numbering does not run across days. Within a day, cards are ordered newest first, matching the day order — the top of the file is always the most recent session.
-
-**Card format**
-
-```
-## YYYY-MM-DD
-
-::: toggle Session 1 — What it turned out to be about
-- Decision summary, carrying a link to the spec entry where it actually lives
-- - -
-- `ACTION` `#N.N` `SEVERITY` **Item title**
-- - -
-Conclusion — what the session amounted to
-- - -
-→ Next: what the next session picks up, and why
-:::
-```
-
-**Title** — names what the session turned out to be about, not the route it took, written when the session closes. Two threads joined by a comma is the ceiling; a title that won't fit in a few words usually means the session should have closed earlier.
-
-**Decisions** — succinct summaries written for a human returning cold. They are not authority. The spec is authority; these point at it.
-
-**Items** — title only, no description. A card records the **action** taken on an item in that session, not its standing state.
-
-| Action | Resulting TASKS.md state | Meaning |
-|---|---|---|
-| `OPENED` | `[ ]` | Item created in that session |
-| `REVISED` | `[ ]` | Scope or description changed |
-| `PENDING REVIEW` | `[x]` | Spec drafted and committed, awaiting review |
-| `CLOSED` | *(removed)* | Reviewed and approved. The session card is now the only record it existed |
-
-Severity and other tags carry over from TASKS.md unchanged. Goals use the same line without a decimal — `` `OPENED` `#11` **Backup & Restore** ``. An item appears only if something happened to it; work that moved nothing belongs in the `→ Next` line.
-
-An item may appear in more than one card, including two on the same day. Opened in the morning, closed in the afternoon — Session 1 shows `OPENED`, Session 3 shows `CLOSED`. Each card is honest about its own session.
-
-**Conclusion** — a short paragraph in plain prose: what the session amounted to and why it mattered. Not a restatement of the item list — it is the part that tells you, months later, whether the session was worth anything. A day carries no conclusion of its own; the sessions are the record.
-
-**→ Next** — the intent for the following session, and the marker that this one is closed. May name items left open or pending review, and may carry context that appears nowhere else in the card.
-
-**Relationship to TASKS.md.** TASKS.md is present tense — work that isn't finished. It shrinks as work completes. DAYS.md is past tense plus one line of future — what happened, and what comes next. It grows without bound. The two never hold the same thing: an item is in TASKS.md, or it is closed in a session card, never both. Decisions appear in neither as authority — they are written into the spec, and DAYS.md carries a one-line summary with a link.
-
-**Sessions**
-
-- A card is opened when the session starts and written as it goes, so a chat joining an open session has something to pick up from.
-- A card without a `→ Next` line is still open. Writing that line closes the session.
-- Sessions close deliberately. Propose a close when the `→ Next` you would write names a different topic than the session opened on, or when the work ahead depends on context that has already been compacted away — then let the user decide. Never close a session unilaterally.
-
-**Reading**
-
-- At the start of every conversation — including one joining a session that is already open — read the last two day sections in full, every session card in each. Never read the whole file. DAYS.md is optimized for a human scanning it and grows without bound.
-- Do not full-text search DAYS.md for general context. For a targeted lookup, grep for the item ID (`#N.N`) or a spec path — both are stable anchors.
-
-**Writing**
-
-- The spec is written before the session card, always. A decision summary linking to a spec section that does not yet exist is a log standing in for the thing it is supposed to point at.
-- A decision summary links to the spec section that carries it. When that section is blocked and cannot yet be written, it links to the TASKS.md item tracking it instead — never to nothing. A decision about repo convention rather than about the product links to the file carrying the convention, usually CLAUDE.md.
-- A card with no item activity omits the item block entirely. Decisions, conclusion, and `→ Next` carry the session on their own.
-- A card may be edited freely during the day it describes. Retroactive editing is prohibited — a card is a snapshot of that session. A session running past midnight stays in the day section it opened in.
-- Fixing a broken link or a typo is not retroactive editing. Changing what the card says happened is.
-- DAYS.md holds the current year. On the first card of a new year, move the previous year's cards to `Days/<year>.md`. Archived files are not read or searched unless the user points at one.
+There is no work log on disk. The user keeps their own notes off-repo and will brief
+you when context from previous work matters. `/sitrep` prints a checkpoint of the
+current conversation for them to write from — manual only, never invoked unprompted.
 
 ---
 

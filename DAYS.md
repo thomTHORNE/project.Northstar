@@ -8,6 +8,32 @@ Format and conventions: [CLAUDE.md](CLAUDE.md).
 
 ## 2026-07-26
 
+::: toggle Session 4 — Cascade scope, and the graph drawn
+- Every relationship names its carrier, applied document-wide rather than to five entities ([Data Model](Spec/1.%20Data%20Model.md))
+- Deletion cascades name every record they remove; a deletion and its cascade are one undoable operation ([Data Model](Spec/1.%20Data%20Model.md))
+- Tags grouped under a deleted parent remain in the library, ungrouped ([Data Model](Spec/1.%20Data%20Model.md))
+- Playlist deletion prompts for confirmation, like every other destructive operation ([Data Model](Spec/1.%20Data%20Model.md))
+- Relationships sections describe the library graph — History and ListeningEvent are system records, not declared from the entity side ([Data Model](Spec/1.%20Data%20Model.md))
+- Six diagrams added; diagrams are derived, prose wins where they disagree, and both change together ([CLAUDE.md](CLAUDE.md))
+- Backup `counts` holds one count per collection; the prompt shows the five a user can judge ([Backup & Restore](Spec/Features/Backup%20&%20Restore.md))
+- - -
+- `PENDING REVIEW` `#1.7` `GAP` **Relationships rule not applied document-wide**
+<br>
+- `PENDING REVIEW` `#1.8` `GAP` **Deletion cascades do not enumerate what they remove**
+<br>
+- `REVISED` `#1.2` `BLOCKER` **`capture_session_id` has no source entity**
+<br>
+- `OPENED` `#11.3` `GAP` **Export destination is never specified**
+<br>
+- `OPENED` `#11.4` `BLOCKER` **Referential validation rejects valid libraries**
+- - -
+The sweep was mechanical and went as expected. Drawing the graph was not. The diagrams were asked for to make the model legible and turned into an audit instead, because a picture forces an enumeration that prose lets a document skip — five cascade sections had never said what they removed, and two of them said something flatly false. The same defect then turned up one file over: Backup & Restore's referential pass would reject any library where a listened-to track was later deleted, which is most libraries.
+
+What connects the three findings is that none of them was a missing decision. The Data Model knew what it meant in every case; it just hadn't written it in the place a reader would look. That is a different failure from an open question, and it is the kind a diagram catches and a review of prose does not.
+- - -
+→ Next: `#1.2`, unchanged from Session 3's → Next and still the last Data Model blocker not held on research. It now carries two recorded downstream consequences — the Backup & Restore payload, and relationship lines on History and ListeningEvent — so resolving it is no longer a single-file change.
+:::
+
 ::: toggle Session 3 — Collection membership, and Backup & Restore
 - Every many-to-many is an association — a record with its own UUID, not a field on either side ([Data Model](Spec/1.%20Data%20Model.md))
 - Every relationship names the field or association that carries it, or it does not exist ([Data Model](Spec/1.%20Data%20Model.md))

@@ -7,7 +7,7 @@ Northstar spec writing tracker. Structure: Alignment → Goal → Item.
 - `[ ]` **Open** — default state, not yet resolved.
 - `[x]` **Pending review** — spec work drafted and committed, awaiting user review.
 
-Resolved tasks are removed from TASKS.md and recorded in that day's DAYS.md card with state `CLOSED`.
+Resolved tasks are removed from TASKS.md.
 
 ## Severity
 
@@ -25,10 +25,16 @@ All open issues in the data model are blockers — they must be resolved before 
 [Spec/1. Data Model.md](Spec/1.%20Data%20Model.md)
 - - -
 - [ ] `#1.2` `BLOCKER` **`capture_session_id` has no source entity**
-    This UUID appears in History and ListeningEvent but is never generated or stored anywhere in the data model. Decide: add a lightweight Capture Session entity, or define it as a UUID generated when Capture Mode is enabled and stored on the Playlist. The Data Model needs to document the origin. Note: a `PlaylistTrack` record could additionally carry it to record which session added a track — that is provenance, and complementary to this question rather than an answer to it. Nothing in Capture Mode currently requires it.
+    This UUID appears in History and ListeningEvent but is never generated or stored anywhere in the data model. Decide: add a lightweight Capture Session entity, or define it as a UUID generated when Capture Mode is enabled and stored on the Playlist. The Data Model needs to document the origin. Note: a `PlaylistTrack` record could additionally carry it to record which session added a track — that is provenance, and complementary to this question rather than an answer to it. Nothing in Capture Mode currently requires it. Resolving this toward a CaptureSession entity has two consequences outside the Data Model: the Backup & Restore payload gains a fourteenth collection, and History and ListeningEvent each gain a relationship line naming `capture_session_id`. Both are silent today.
 <br>
 - [ ] `#1.3` `BLOCKER` **Association undo granularity is underspecified**
     Associations are records History can name and reverse, and the Tag deletion cascade already commits to restoring them as one grouped operation. What remains is granularity: how association changes compose into a single undoable operation, and where the boundary of one operation sits. This is the subject of `Research/Operation Layer`, which is stress-testing exactly this against History. Held deliberately until that research resolves — do not answer it from momentum.
+<br>
+- [x] `#1.7` `GAP` **Relationships rule not applied document-wide**
+    The Data Model states that every relationship names its carrier, but eight lines don't: "Has one Note" on five entities, Note's own relationship, and ListeningEvent's two. History has no Relationships section at all despite `entity_id` and `related_entries`. A stated rule with exceptions is worse than no rule.
+<br>
+- [x] `#1.8` `GAP` **Deletion cascades do not enumerate what they remove**
+    The Associations preamble states that deleting an entity deletes the associations it connects and that the entity's cascade governs, but no cascade section enumerates them. Track's "No other entities are affected" and Playlist's "only the playlist is removed" are both false — Note's cascade deletes the note with its entity. Two contradictions and four omissions across five sections.
 :::
 
 
@@ -48,7 +54,11 @@ All open issues in the data model are blockers — they must be resolved before 
 ::: toggle `#11` Backup & Restore
 [Spec/Features/Backup & Restore.md](Spec/Features/Backup%20&%20Restore.md)
 - - -
-No open items.
+- [ ] `#11.3` `GAP` **Export destination is never specified**
+    The spec states export is manual and that Northstar does not track where exports were saved, but never says what the export interaction is — a system save dialog, a share sheet, or something else. "Moved into place only once complete" presumes a destination the spec never establishes.
+<br>
+- [ ] `#11.4` `BLOCKER` **Referential validation rejects valid libraries**
+    Restore's referential pass requires every ListeningEvent's `track_id` and `playlist_id` to resolve within the file, but both are soft references — a ListeningEvent survives deletion of its track by design. Any library where a listened-to track or playlist was later deleted fails validation on restore. History's `entity_id` is excluded from the pass for the same reason, but the exclusion is unexplained, so the pass reads as a list rather than a rule. Distinguish hard references from soft ones.
 :::
 
 

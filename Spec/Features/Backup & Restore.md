@@ -25,7 +25,7 @@ A backup is a single JSON file: an envelope describing the backup, and a payload
 | `format` | Always `northstar-backup`. Identifies the file as a Northstar backup |
 | `version` | Schema version of the payload. Restore refuses a version it does not understand |
 | `created_at` | When the export was taken |
-| `counts` | Entity counts, shown to the user before a restore and reconciled after loading |
+| `counts` | One count per payload collection. Reconciled against the records loaded during a restore |
 | `checksum` | SHA-256 over the serialized payload |
 | `payload` | The library |
 
@@ -38,7 +38,7 @@ Collections are flat rather than nested. The file mirrors the Data Model exactly
 Restore replaces the entire local library. It is the only operation in Northstar that destroys data the user did not explicitly delete, and its sequence is built so that a failure at any point leaves the existing library untouched.
 
 1. The user selects a backup file.
-2. Northstar reads the envelope and shows what the file contains — its `counts` and `created_at` — and asks for confirmation.
+2. Northstar reads the envelope and shows what the file contains — `created_at`, and the counts for tracks, artists, albums, playlists, and tags — and asks for confirmation. Association counts are reconciled but not shown; they are not something a user can judge a backup by.
 3. Northstar writes a safety backup of the current library.
 4. The payload is loaded into a temporary store and validated in full.
 5. Only once validation passes is the temporary store swapped in.
