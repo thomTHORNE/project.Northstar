@@ -2,7 +2,7 @@
 
 **Status:** `Open`
 
-Part of the initiative described in [Seed.md](../Seed.md).
+Part of the initiative described in [A Library You Ask](../A%20Library%20You%20Ask.md).
 
 ---
 
@@ -44,5 +44,5 @@ Some floor — a volume or time-span below which questioning is refused rather t
 
 - **What is the minimum viable dataset**, and what does the feature do below it?
 - **Dashboard, questioning, or both?** They are not the same feature and may not have the same schedule. The dashboard has no dependency on any of this work.
-- **What questions do people actually ask** about their own listening? Currently assumed rather than known. The reference papers in [Ideas.md](../../Ideas.md) are the starting point.
+- **What questions do people actually ask** about their own listening? Currently assumed rather than known. The reference papers in [Ideas.md](../../../Ideas.md) are the starting point.
 - **Does this need ListeningEvents for unsaved tracks?** The related Ideas.md entry is unresolved and bears directly on what Discovery-mode listening can be asked about.

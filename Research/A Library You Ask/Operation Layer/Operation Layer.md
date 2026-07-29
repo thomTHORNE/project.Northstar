@@ -2,7 +2,7 @@
 
 **Status:** `Open`
 
-Part of the initiative described in [Seed.md](../Seed.md).
+Part of the initiative described in [A Library You Ask](../A%20Library%20You%20Ask.md).
 
 ---
 
@@ -46,6 +46,6 @@ Add testability and the case is complete without argument. Operations are unit-t
 
 ## Open questions
 
-- **Composition and undo granularity.** Forty writes issued as one instruction — is that forty History entries or one group? History's grouping is currently defined by cascade, not intent (see [Data Model — History](../../Spec/1.%20Data%20Model.md#history)). The answer likely changes what `related_entries` means. Shipping composite operations instead moves the problem rather than solving it: the set stops being primitives and grows without a ceiling.
+- **Composition and undo granularity.** Forty writes issued as one instruction — is that forty History entries or one group? History's grouping is currently defined by cascade, not intent (see [Data Model — History](../../../Spec/1.%20Data%20Model.md#history)). The answer likely changes what `related_entries` means. Shipping composite operations instead moves the problem rather than solving it: the set stops being primitives and grows without a ceiling.
 - **Does preview double the surface?** Forty operations plus fifteen previews that can drift apart is a maintenance shape worth examining before committing.
 - **The catalogue is blocked.** Its vocabulary is the Data Model's vocabulary, and `#1.1`–`#1.5` leave playlists and tags with no storage mechanism. Naming operations over entities that cannot hold anything produces fiction. The *principle* is statable now; the catalogue is not.

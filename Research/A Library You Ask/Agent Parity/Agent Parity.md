@@ -2,7 +2,7 @@
 
 **Status:** `Open`
 
-Part of the initiative described in [Seed.md](../Seed.md).
+Part of the initiative described in [A Library You Ask](../A%20Library%20You%20Ask.md).
 
 ---
 

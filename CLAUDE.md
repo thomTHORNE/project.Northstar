@@ -63,10 +63,12 @@ Northstar.git/
 │       ├── YouTube.md
 │       └── Google Drive.md
 ├── Research/               ← ideas developed in parallel to spec; no authority (see below)
-│   ├── Seed.md             ← the initiative behind the current topics; frozen origin appendix
-│   ├── Operation Layer/
-│   ├── Agent Parity/
-│   └── Habit Tracking/
+│   ├── Track Imprint/      ← standalone topic
+│   └── A Library You Ask/  ← initiative binding three topics
+│       ├── Origin.md       ← frozen
+│       ├── Operation Layer/
+│       ├── Agent Parity/
+│       └── Habit Tracking/
 ├── Learning/               ← topic explainers; not project spec (see note below)
 ├── History.md              ← legacy, superseded by DAYS.md. Do not read, search, or reference.
 ├── Brainstorm/             ← legacy, outdated. Do not read, search, or reference.
@@ -103,13 +105,42 @@ Northstar.git/
 
 ## Research
 
-`Research/` is where an idea that has outgrown `Ideas.md` is developed in parallel to the spec. Each topic is a subdirectory following `<Topic>/<Topic>.md`, plus whatever supporting files it needs.
+`Research/` is where an idea is developed in parallel to the spec, at more length than `Ideas.md` can hold.
 
 Research carries no authority. It does not define behavior and nothing in it constrains implementation — it is thinking in progress, not a decision. Where `Learning/` explains concepts and `Ideas.md` parks possibilities, `Research/` is the one place with a path out: a topic developed thoroughly and shown to apply to Northstar is promoted into `Spec/`, and the research document stops being the reference the moment it lands there.
 
-**Topics are split by blocker, not by subject.** Two threads sharing a subject but waiting on different things belong in separate topics, so neither is held up by the other's blocker. Parallel development is the reason the directory exists.
+### Structure
 
-**Findings are owned by the document they change**, not the one they were discovered in. A finding at the seam between two topics belongs to the topic that must change if it holds. Every topic carries a `Dependencies` section naming both directions — what it requires from other topics, and what requires it.
+**A topic is the unit of research.** Each is a directory holding `<Topic>/<Topic>.md`, plus whatever supporting files it needs.
+
+**An initiative is optional.** When several topics are worth more together than apart, they nest under an initiative directory carrying its own document — the case for why they belong together, the findings that live at their seams, and what would falsify the whole. A topic that stands alone sits at the top level. Grouping is read off the tree, not declared inside files.
+
+```
+Research/
+├── <Topic>/                ← stands alone
+│   └── <Topic>.md
+└── <Initiative>/
+    ├── <Initiative>.md
+    ├── Origin.md           ← frozen, if promoted from Ideas.md
+    └── <Topic>/
+        └── <Topic>.md
+```
+
+**Topics are split by blocker, not by subject.** Two threads sharing a subject but waiting on different things belong in separate topics, so neither is held up by the other's blocker. Parallel development is the reason the directory exists. It follows that two topics under one initiative are still independent — an initiative explains why they matter together, it does not couple their schedules.
+
+### Origin
+
+A topic entering `Research/` from `Ideas.md` carries its entry across as `Origin.md`, frozen and never edited. A topic that was never parked in `Ideas.md` has no `Origin.md` — it was written here from the start, and the topic document is its own first record.
+
+`Origin.md` sits beside the document it seeded — at the initiative when an entry was promoted into one, at the topic when it was promoted into a standalone topic. References inside a frozen origin may no longer resolve; that is expected and they are not repaired.
+
+Promoted ideas are removed from `Ideas.md`. The frozen origin is the only copy.
+
+### Findings and dependencies
+
+**Findings are owned by the document they change**, not the one they were discovered in. A finding at the seam between two topics belongs to the topic that must change if it holds. Every topic carries a `Dependencies` section naming both directions — what it requires from other topics, and what requires it. A topic with neither says so.
+
+### Status and promotion
 
 **Topic status**, carried on the first line of the topic document:
 
@@ -119,7 +150,7 @@ Research carries no authority. It does not define behavior and nothing in it con
 | `Ready` | Cleared the promotion bar, held by a dependency. Earns a TASKS.md item carrying the `Deps:` that blocks it |
 | `Promoted` | Landed in spec. The research document is no longer the reference |
 
-Research stays out of TASKS.md while it is still research. A topic enters the tracker only at `Ready`, at which point its promotion is spec work like anything else and the existing DAYS.md vocabulary covers it.
+Research stays out of TASKS.md while it is still research. A topic enters the tracker only at `Ready`, at which point its promotion is spec work like anything else.
 
 **Promotion bar.** A topic is ready when its open questions are resolved rather than listed, and its conclusions can be stated as decisions in the spec's own voice.
 
