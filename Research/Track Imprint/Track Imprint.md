@@ -43,6 +43,10 @@ Four frameworks, reduced to what each forbids:
 
 **The limit belongs to the display, not the library.** A user may author many imprints; what is bounded is how many fields are within reach while a track plays. Three to five, one of them primary.
 
+**The theme is carried by a note.** An imprint holds a free-form note — the same [Note](../../Spec/Features/Notes.md) entity used everywhere else in the library, defined as carrying no structural meaning and existing to hold personal context. That is precisely what a theme is: what *you* mean by pairing these two axes, written for a human and computed by nothing. An imprint without a note is one whose theme was never written down. (The Note entity's `entity_type` would need to name imprints — data model work deliberately not done here.)
+
+**The note is the only part of an imprint editable after authoring.** Name and axes are frozen. The principle: **edit what you meant, never edit what you measured.** Understanding of a theme legitimately develops over years and the note is where that goes; changing an axis silently rewrites the meaning of every point ever placed on it.
+
 ---
 
 ## The field
@@ -104,6 +108,57 @@ A spectrum asserts that its ends are one dimension and that moving toward one is
 
 ---
 
+## Reviewing accumulated imprints
+
+### Axes belong to their imprint
+
+Two imprints may use the same axis label — *happy ↔ sad* can appear in both a *Mood* imprint and a *Memory* one. These are two different axes sharing a vocabulary, not one axis seen twice.
+
+Sharing an axis across imprints breaks in three places. Placing a mark sets both coordinates at once, so a shared axis would let a placement in one field silently pre-fill another, destroying the rule that empty and centre are different data. A two-mark mixed reading would hand the other imprint two values with no rule for which pairs with its own coordinate. And weight is per mark, per field, so a shared axis would inherit a weight from a field it was never placed in.
+
+All three fail for the same reason: **the reading is the point, not its coordinates.** Decomposing a mark into independent per-axis values destroys what made it a single act.
+
+This is not a compromise. A track can be sad in itself and happy as a memory — not contradictory readings of one dimension, but readings of two, sharing a vocabulary because the themes around them differ. **An axis is therefore never named without its imprint.** The imprint is the namespace, and review is scoped by imprint before anything else.
+
+### What review can compute
+
+| Data | Not data |
+|---|---|
+| Imprint name, its four axis-end labels | What any position *means* |
+| Per track per imprint: zero, one or two marks | Why two imprints relate |
+| Per mark: position, weight, moment-in-track | |
+| The imprint's note — prose, read and never computed | |
+
+Review shows where things sit and how firmly. It does not say what that signifies. This is the position Northstar already takes elsewhere: surface the patterns, draw no conclusions.
+
+**Never average, in review either.** Two marks spanning an axis average to the centre — the flat-versus-mixed collapse re-entering through the analytics layer. A scatter plots **marks, not tracks**: a mixed track legitimately appears in two regions, tethered.
+
+### Two properties to be honest about
+
+**Selection bias is structural.** You imprint tracks that moved you, during listens where you were engaged enough to reach for the field. The distribution is never "your library" — it is *what moved you, when you were paying attention*. Any surface presenting it as a picture of the library is lying, and should be framed accordingly.
+
+**Coverage is data, and the only feedback available on a badly authored imprint.** Since axes are frozen, a wrong one cannot be fixed, only retired. An imprint carrying very few marks across the library is one that is not earning its place, and coverage is how that becomes visible.
+
+### Surfaces worth exploring
+
+Ideas, not decisions. Each would be designed in the UI phase.
+
+**The populated field.** An imprint's own field showing every marked track as a point. The primary review surface, because the imprint is the unit of meaning.
+
+**Lasso to playlist.** Draw a region on a populated field and it becomes a dynamic playlist — a volume in imprint space rather than a query assembled from dropdowns. The most promising idea here: it replaces a query builder with a gesture, and it is legible to someone who would never open a filter panel. It is also where this topic meets [Playlists](../../Spec/Features/Playlists.md), which currently compose from tag filters.
+
+**A track's threads.** Every mark a track carries across all its imprints, shown together. The fingerprint.
+
+**The imprint preview.** A compact rendering of a track's marks, small enough to sit beside the track wherever it appears. Only lightly touched on so far, and the surface that would make imprints visible during ordinary browsing rather than only in review.
+
+**The track timeline.** Marks at the playhead positions where they were made, so a track carries a record of where *in itself* it moved you.
+
+**Drift.** How a track's placements changed across listens, and how the library's distribution within a theme moved over months. The reflective payoff, and the thing tags could never produce.
+
+**Cross-imprint comparison — user-initiated only.** The numbers permit correlating one imprint's axis against another's, but a correlation between dimensions defined for unrelated reasons is a figure with no interpretation attached. Surfacing it unprompted would be the system asserting a meaning it has no access to. Available on request; never volunteered.
+
+---
+
 ## Rules settled
 
 - An imprint is a theme plus exactly two bipolar spectra.
@@ -114,6 +169,9 @@ A spectrum asserts that its ends are one dimension and that moving toward one is
 - Two marks are one reading, shown tethered.
 - Queries match on any mark and never on an average.
 - Press and hold on a mark to lift it.
+- Axes belong to their imprint. An axis is never named without it.
+- An imprint's theme is carried by a note, the only part editable after authoring.
+- Marks are never averaged — in queries or in review.
 
 ---
 
@@ -130,6 +188,10 @@ A spectrum asserts that its ends are one dimension and that moving toward one is
 **Authoring weight.** Structural edits to an imprint are closed, since a changed axis silently rewrites the meaning of every point ever placed on it. The authoring surface must carry that weight rather than merely warn about it — a high-stakes act that looks cheap teaches people it is cheap.
 
 **What replaces the tag elsewhere.** Tags currently apply to artists, albums and playlists as well as tracks, and drive playlist filters. This topic covers tracks only. Whether imprints extend to other entities, and what happens to factual labels that are not spectra at all, is unanswered.
+
+**Marks carry no wall-clock timestamp.** A mark records position, weight and moment-in-track. *When it was made* is a distinct thing from *where in the track it landed*, and drift — the surface with the most to offer — needs the former. Absent from the model as described.
+
+**Retirement is undefined.** Coverage is meant to reveal a badly authored imprint, and frozen axes mean the only remedy is retirement. Nothing says what that does to marks already placed: kept read-only, hidden from review but preserved, or removed with the imprint. The answer interacts with whether playlists lassoed from a retired imprint survive it.
 
 ---
 
