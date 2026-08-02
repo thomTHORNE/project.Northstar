@@ -4,7 +4,7 @@ Northstar spec writing tracker. Structure: Alignment → Goal → Item.
 
 ## Status
 
-- `[ ]` **Open** — default state, not yet resolved.
+- `[ ]` **Unresolved** — default state. No spec work drafted yet.
 - `[x]` **Pending review** — spec work drafted and committed, awaiting user review.
 
 Resolved tasks are removed from TASKS.md.
@@ -34,7 +34,25 @@ All open issues in the data model are blockers — they must be resolved before 
     The Data Model states that every relationship names its carrier, but eight lines don't: "Has one Note" on five entities, Note's own relationship, and ListeningEvent's two. History has no Relationships section at all despite `entity_id` and `related_entries`. A stated rule with exceptions is worse than no rule.
 <br>
 - [x] `#1.8` `GAP` **Deletion cascades do not enumerate what they remove**
-    The Associations preamble states that deleting an entity deletes the associations it connects and that the entity's cascade governs, but no cascade section enumerates them. Track's "No other entities are affected" and Playlist's "only the playlist is removed" are both false — Note's cascade deletes the note with its entity. Two contradictions and four omissions across five sections.
+    The five cascade sections now enumerate what they remove; two places were not swept with them. The Artist/Album cascade diagram shows neither entity's own `TagAssociation` rows nor its note, and places `AlbumTrack rows deleted` under the Keep-tracks branch alone though the prose says both cases. Track's Rules line still reads "Artists and albums are not affected" — it omits the track's tag associations and note, and the album does lose an `AlbumTrack` row. A diagram changes with the prose or it is the defect.
+<br>
+- [x] `#1.9` `GAP` **Polymorphic diagram overstates what History references**
+    The diagram labels History's target "Every entity and association". `History.entity_type` enumerates eleven types, excluding ListeningEvent and History itself. ListeningEvent is listed as an entity, is append-only, carries no undo, and is absent from the feed — a reader following the diagram writes History rows for listening events.
+<br>
+- [x] `#1.10` `GAP` **ER diagram contradicts the field tables and its own legend**
+    `ARTIST ||--o{ ALBUM`, `ARTIST ||--o{ TRACK` and `PLAYLIST ||..o{ LISTENING_EVENT` use exactly-one on the parent side where the field is `Required: No`. The legend defines solid as identifying — the record cannot exist without what it points at — but albums and tracks survive artist deletion with `artist_id` nulled, so both `ARTIST` lines are drawn as the wrong kind of relationship.
+<br>
+- [x] `#1.11` `BLOCKER` **Nested cascade prompting is undefined**
+    Deleting an artist and choosing to delete its albums runs each album's cascade, and that cascade is a user choice. Whether the user is asked once or once per album is stated nowhere. The cascade diagram routes artist-deleted albums into the album's decision node, so an artist with twelve albums reads as twelve further prompts. Decide where the choice is made and the diagram follows.
+<br>
+- [ ] `#1.12` `BLOCKER` **Association position semantics are undefined**
+    `AlbumTrack.position` and `PlaylistTrack.position` are zero-based and unique per parent. Nothing says whether positions stay contiguous when a row is removed, or what a reorder does — two rows cannot swap one at a time under a unique constraint. Playlists.md offers "reordered freely" against a rule that forbids the obvious implementation. Contiguity and reorder semantics are model-level and answerable now; how the constraint is enforced is engine-level and is not.
+<br>
+- [ ] `#1.13` `MINOR` **Tag deletion warning omits the hierarchy effect**
+    The tag cascade ungroups every child tag, but the warning enumerates only the entities carrying the tag and the playlists filtering on it. Tags.md repeats the same enumeration. A user deleting a parent tag is not told the group dissolves.
+<br>
+- [ ] `#1.14` `BLOCKER` **Album deletion scope over shared tracks**
+    Deleting an album and choosing **Delete tracks** "removes all tracks belonging to this album". Two cases that reading swallows: a track whose `artist_id` is a different artist, and a track that also appears on another album via a second `AlbumTrack` row. The second deletes the track from the library, so it disappears from albums the user was not deleting. Compilations make this ordinary rather than rare — the Data Model gives a greatest hits album as its own example. Decide the reach. `#1.3` governs how the result composes into one undoable operation and does not answer this.
 :::
 
 

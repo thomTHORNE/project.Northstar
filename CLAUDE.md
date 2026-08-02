@@ -127,7 +127,7 @@ Research/
         └── <Topic>.md
 ```
 
-**Topics are split by blocker, not by subject.** Two threads sharing a subject but waiting on different things belong in separate topics, so neither is held up by the other's blocker. Parallel development is the reason the directory exists. It follows that two topics under one initiative are still independent — an initiative explains why they matter together, it does not couple their schedules.
+**Topics are split by blocker, not by subject.** Two questions sharing a subject but waiting on different things belong in separate topics, so neither is held up by the other's blocker. Parallel development is the reason the directory exists. It follows that two topics under one initiative are still independent — an initiative explains why they matter together, it does not couple their schedules.
 
 ### Origin
 
@@ -182,7 +182,8 @@ short — index it instead.
   settles the whole group it is one thread; if two answers are needed and either could
   go its own way, it is two.
 - **Topic** — what the conversation is about. Contains many threads, changes rarely, and
-  is the user's to set. A `PIVOT` is a thread that changes it.
+  is the user's to set. A `PIVOT` is a thread that changes it. Unrelated to a `Research/`
+  topic, which is a directory with a status.
 
 ### What is a thread
 
@@ -251,7 +252,7 @@ Skills print what their skill file specifies. This section governs conversation.
 
 - Never write to files without explicit approval of a specific draft. "Sure" or "ok" in response to "want me to write it?" means show a draft first — not write to files.
 - TASKS.md uses an Alignment → Goal → Item hierarchy. Goals carry `#N` IDs. Items carry `#N.N` decimal IDs scoped to their goal. Severity (`BLOCKER` / `GAP` / `MINOR`) is carried on the item line only. TASKS.md holds no second index of items — the Alignment → Goal → Item hierarchy is the whole file.
-- TASKS.md item format: first line carries the checkbox, ID, tags, and bold title; the description goes on the next line indented by 4 spaces. Tag order: severity, then `Deps: #X.X` if any. Items without a description are single-line. `<br>` separates consecutive items in a goal. Status: `[ ]` Open (default), `[x]` Pending review (drafted, awaiting review).
+- TASKS.md item format: first line carries the checkbox, ID, tags, and bold title; the description goes on the next line indented by 4 spaces. Tag order: severity, then `Deps: #X.X` if any. Items without a description are single-line. `<br>` separates consecutive items in a goal. Status: `[ ]` Unresolved (default), `[x]` Pending review (drafted, awaiting review).
 
   Example:
   ```
