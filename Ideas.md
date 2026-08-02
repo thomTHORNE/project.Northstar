@@ -2,7 +2,7 @@
 
 A running list of ideas worth revisiting. Nothing here is committed to the spec — these are possibilities, not decisions.
 
-An idea that outgrows this file is promoted to [Research/](Research/), where it is developed in parallel to the spec. Promoted ideas are removed from here — their frozen originals live in [Research/Seed.md](Research/Seed.md).
+An idea that outgrows this file is promoted to [Research/](Research/), where it is developed in parallel to the spec. Promoted ideas are removed from here — their frozen originals live beside the document they seeded, as `Origin.md`.
 
 ---
 
@@ -99,13 +99,13 @@ The example below uses Capture Mode as a reference point, but instrumentation co
 - Capture skip rate (how often the threshold or duplicate rules prevent a capture)
 - Most common source types captured from
 
-For the user-facing equivalent — a personal dashboard of listening patterns, library growth, and tag usage — see [Research/Habit Tracking](Research/Habit%20Tracking/Habit%20Tracking.md).
+For the user-facing equivalent — a personal dashboard of listening patterns, library growth, and tag usage — see [Research/Habit Tracking](Research/A%20Library%20You%20Ask/Habit%20Tracking/Habit%20Tracking.md).
 
 ---
 
 ## Reference papers
 
-A collection of papers and articles saved during the Habit Tracking and ListeningEvent design discussions. Useful for understanding the psychology behind how people actually experience music — relevant to feature decisions around listening thresholds, habit tracking, and the emotional core of Northstar. Habit Tracking now lives in [Research/](Research/Habit%20Tracking/Habit%20Tracking.md); these stay here until they have a better home.
+A collection of papers and articles saved during the Habit Tracking and ListeningEvent design discussions. Useful for understanding the psychology behind how people actually experience music — relevant to feature decisions around listening thresholds, habit tracking, and the emotional core of Northstar. Habit Tracking now lives in [Research/](Research/A%20Library%20You%20Ask/Habit%20Tracking/Habit%20Tracking.md); these stay here until they have a better home.
 
 ---
 
