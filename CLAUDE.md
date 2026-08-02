@@ -138,6 +138,84 @@ Partial promotion is allowed for sections that stand on their own justification.
 
 ---
 
+## Threads
+
+The user triages conversation by thread and assigns finite attention to each. Volume is
+never the problem; an unnavigable message is. Never withhold a finding to keep a message
+short — index it instead.
+
+### Vocabulary
+
+- **Finding** — one true thing discovered. It holds or it doesn't. Costs nothing alone.
+- **Thread** — one unit of the user's attention. The test is disposal: if one answer
+  settles the whole group it is one thread; if two answers are needed and either could
+  go its own way, it is two.
+- **Topic** — what the conversation is about. Contains many threads, changes rarely, and
+  is the user's to set. A `PIVOT` is a thread that changes it.
+
+### What is a thread
+
+Threads are what the user did not ask for. Answering what they did ask is the current
+thread, however much approval it needs — a requested draft is not a new thread.
+
+A finding discovered while answering does not become part of the answer by proximity.
+If it needs something from the user, it is a thread and it goes in the index.
+
+### When this applies
+
+Any message introducing something the user has not already agreed to. A message that
+only reports approved work, answers directly with no new finding, or asks one clarifying
+question needs no index — it is one thread and already legible.
+
+### Structure
+
+1. **The answer** to what was asked.
+2. **The index** — every thread, one line, tagged, ordered by tag.
+3. **The threads**, numbered to match the index, each visually delimited.
+
+Index lines state the finding, not its subject: "Diagram claims History covers
+ListeningEvent", not "History diagram". A stated finding lets the whole index be triaged
+without opening a single thread.
+
+### Tags
+
+Tags say what the thread costs the user, not what the finding is. `TASKS.md` severity
+(`BLOCKER` / `GAP` / `MINOR`) is a different axis and stays in `TASKS.md`.
+
+| Tag | Means | Test |
+|---|---|---|
+| `CORRECTION` | Something stated earlier was wrong | Acting on the old statement would now be a mistake |
+| `PIVOT` | Changes where the current work is heading | Taking it reorders or invalidates work in progress |
+| `APPROVE` | A drafted change, yes or no | The exact text exists and one word disposes of it |
+| `DECIDE` | A genuine choice | More than one path is viable and the user picks |
+| `NOTE` | Surfaced, needs nothing | It could be skipped and nothing downstream breaks |
+
+The index is ordered by that table, top to bottom. Corrections invalidate, pivots
+redirect, then the asks, then the rest.
+
+Where two tags fit, the higher one wins. A pivot that also needs a decision is a `PIVOT`.
+
+### Unanswered threads
+
+A thread is expanded in full once. If the user does not address it, it is expanded once
+more in the next message carrying an index. After that it drops to a standing line at
+the end of the message:
+
+`Open threads — 3 Position encoding · 5 Export destination`
+
+Named, not re-explained, expanded on request. A thread leaves the standing list when the
+user answers it or says to drop it. Nothing is ever dropped silently.
+
+### Form
+
+Never remove information to save space — categorize and index it. Inside a thread use
+whatever form fits: a table for a comparison, a diff for a draft, a diagram where it is
+clearer. The flat-list constraint applies only to the index, which is a scan surface.
+
+Skills print what their skill file specifies. This section governs conversation.
+
+---
+
 ## Spec & docs workflow
 
 - Never write to files without explicit approval of a specific draft. "Sure" or "ok" in response to "want me to write it?" means show a draft first — not write to files.
